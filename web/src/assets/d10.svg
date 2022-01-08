@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="mdi-dice-d10-outline"
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   sodipodi:docname="d10.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata9">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs7" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview5"
+     showgrid="false"
+     inkscape:zoom="35.416667"
+     inkscape:cx="12"
+     inkscape:cy="12"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="mdi-dice-d10-outline" />
+  <path
+     d="m 21.5,10.8 c 0.6,0.7 0.6,1.7 0,2.4 l -8.3,8.3 c -0.7,0.7 -1.7,0.7 -2.4,0 L 2.5,13.2 c -0.7,-0.7 -0.7,-1.7 0,-2.4 l 8.3,-8.3 c 0.7,-0.7 1.7,-0.7 2.4,0 l 8.3,8.3"
+     id="path2" />
+  <path
+     d="M 20.3,12 12,3.7 3.7,12 12,20.3 20.3,12"
+     id="path836"
+     style="fill:#ffffff" />
+  <path
+     d="m 13.93,8 a 2.57,2.57 0 0 1 2.57,2.57 v 2.64 c 0,1.42 -1.15,2.57 -2.57,2.57 -1.43,0 -2.57,-1.15 -2.57,-2.57 V 10.57 A 2.57,2.57 0 0 1 13.93,8"
+     id="path840" />
+  <path
+     d="m 13.92,9.44 a 1.06,1.06 0 0 0 -1.06,1.06 v 2.77 a 1.06,1.06 0 0 0 1.06,1.06 C 14.5,14.33 15,13.85 15,13.27 V 10.5 C 15,9.91 14.5,9.44 13.92,9.44 Z"
+     id="path842"
+     style="fill:#ffffff" />
+  <path
+     d="M 10.38,15.79 H 8.88 V 10 l -1.8,0.55 V 9.32 L 10.22,8.2 h 0.16 v 7.59"
+     id="path838" />
+</svg>

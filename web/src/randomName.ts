@@ -1,0 +1,82 @@
+const ANIMAL_NAMES = [
+  "Dog",
+  "Puppy",
+  "Turtle",
+  "Rabbit",
+  "Parrot",
+  "Cat",
+  "Kitten",
+  "Mouse",
+  "Rabbit",
+  "Duck",
+  "Shrimp",
+  "Goat",
+  "Crab",
+  "Deer",
+  "Bee",
+  "Sheep",
+  "Fish",
+  "Turkey",
+  "Dove",
+  "Horse",
+  "Seal",
+  "Shark",
+  "Walrus",
+  "Whale",
+  "Squid",
+  "Otter",
+  "Ant",
+  "Worm",
+  "Fly",
+  "Crow",
+  "Goose",
+  "Stork",
+  "Hawk",
+  "Robin",
+  "Swan",
+  "Owl"
+];
+
+const ADJECTIVES = [
+  "Sloppy",
+  "Odd",
+  "Rigid",
+  "Happy",
+  "Tidy",
+  "Rapid",
+  "Flat",
+  "Lively",
+  "Utopian",
+  "Private",
+  "Fierce",
+  "Square",
+  "Oval",
+  "Untidy",
+  "Bumpy",
+  "Greedy",
+  "Bouncy",
+  "Silent",
+  "Loud",
+  "Tearful",
+  "Sturdy",
+  "Natural",
+  "Giant",
+  "Little",
+  "Big",
+  "Shiny",
+  "Sad",
+  "Dizzy",
+  "Slim",
+  "Modern",
+  "Warm",
+  "Strong",
+  "Crazy"
+];
+
+export default function() {
+  return (
+    ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)] +
+    " " +
+    ANIMAL_NAMES[Math.floor(Math.random() * ANIMAL_NAMES.length)]
+  );
+}
