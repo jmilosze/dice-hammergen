@@ -3,7 +3,7 @@ import "firebase/database";
 import "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDKzFXdJrFwtyNRaSs1KEfEIAeSSSkWAko",
+  apiKey: "AIzaSyCeP45XubdwtjY1s_E8GyDuYtNqfBHc32s",
   authDomain: "dice-roller-c518a.firebaseapp.com",
   databaseURL: "https://dice-roller-c518a.firebaseio.com",
   projectId: "dice-roller-c518a",
