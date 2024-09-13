@@ -6,4 +6,5 @@ functions/node_modules/
 web/node_modules/
 
 database-debug.log
+pubsub-debug.log
 ui-debug.log

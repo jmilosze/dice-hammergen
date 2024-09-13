@@ -4,14 +4,10 @@ import { initializeApp } from "firebase-admin/app";
 import { getDatabase, DataSnapshot } from "firebase-admin/database";
 import { generate } from "randomstring";
 
-type Updates = {
-  [key: string]: null;
-};
-
 const MAX_SESSIONS = 1000;
 const MAX_RETRY = 3;
 const SESSION_EXPIRY = 28800; // 8 hours in seconds
-// const SESSION_EXPIRY = 60;
+const TEST_SESSION_EXPIRY = 30;
 
 initializeApp();
 if (process.env.FIREBASE_DATABASE_EMULATOR_HOST) {
@@ -67,15 +63,16 @@ export const createSession = onRequest(async (_request, response) => {
   });
 });
 
-export const clearExpiredScheduled = onSchedule(
-    {
-      schedule: "every 8 hours",
-      timeZone: "UTC",
-    },
-    clearExpired
-);
+export const clearExpiredScheduled = onSchedule("0 */8 * * *", clearExpired);
 
-export async function clearExpired() {
+async function clearExpired() {
+
+  let expiry = SESSION_EXPIRY
+  if (process.env.FIREBASE_DATABASE_EMULATOR_HOST) {
+    console.log('Using test session expiry');
+    expiry = TEST_SESSION_EXPIRY
+  }
+
   const db = getDatabase();
   const sessionsNode = await db.ref("sessionTimestamps").once("value");
 
@@ -84,11 +81,12 @@ export async function clearExpired() {
   }
 
   const currentTime = timestamp();
-  const updates: Updates = {};
+  const updates: Record<string, string | null> = {};
 
   sessionsNode.forEach((childSnapshot: DataSnapshot) => {
     const sessionTime = childSnapshot.val();
-    if (typeof sessionTime === "number" && currentTime - sessionTime >= SESSION_EXPIRY) {
+
+    if (typeof sessionTime === "number" && currentTime - sessionTime >= expiry) {
       const key = childSnapshot.key;
       if (key !== null) {
         updates[`sessionTimestamps/${key}`] = null;
