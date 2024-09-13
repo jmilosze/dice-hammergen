@@ -4,7 +4,6 @@ import { initializeApp } from "firebase-admin/app";
 import { getDatabase, DataSnapshot } from "firebase-admin/database";
 import { generate } from "randomstring";
 
-// Define a type for the updates object
 type Updates = {
   [key: string]: null;
 };
@@ -15,10 +14,13 @@ const SESSION_EXPIRY = 28800; // 8 hours in seconds
 // const SESSION_EXPIRY = 60;
 
 initializeApp();
+if (process.env.FIREBASE_DATABASE_EMULATOR_HOST) {
+  console.log('Using database emulator');
+}
 
 const timestamp = () => Math.floor(Date.now() / 1000);
 
-export const createSession = onRequest(async (request, response) => {
+export const createSession = onRequest(async (_request, response) => {
   response.set("Access-Control-Allow-Origin", "*");
 
   const db = getDatabase();
@@ -65,35 +67,37 @@ export const createSession = onRequest(async (request, response) => {
   });
 });
 
-export const clearExpired = onSchedule(
-  {
-    schedule: "every 8 hours",
-    timeZone: "UTC",
-  },
-  async () => {
-    const db = getDatabase();
-    const sessionsNode = await db.ref("sessionTimestamps").once("value");
-
-    if (!sessionsNode.exists()) {
-      return;
-    }
-
-    const currentTime = timestamp();
-    const updates: Updates = {};
-
-    sessionsNode.forEach((childSnapshot: DataSnapshot) => {
-      const sessionTime = childSnapshot.val();
-      if (typeof sessionTime === "number" && currentTime - sessionTime >= SESSION_EXPIRY) {
-        const key = childSnapshot.key;
-        if (key !== null) {
-          updates[`sessionTimestamps/${key}`] = null;
-          updates[`sessions/${key}`] = null;
-        }
-      }
-    });
-
-    if (Object.keys(updates).length > 0) {
-      await db.ref().update(updates);
-    }
-  },
+export const clearExpiredScheduled = onSchedule(
+    {
+      schedule: "every 8 hours",
+      timeZone: "UTC",
+    },
+    clearExpired
 );
+
+export async function clearExpired() {
+  const db = getDatabase();
+  const sessionsNode = await db.ref("sessionTimestamps").once("value");
+
+  if (!sessionsNode.exists()) {
+    return;
+  }
+
+  const currentTime = timestamp();
+  const updates: Updates = {};
+
+  sessionsNode.forEach((childSnapshot: DataSnapshot) => {
+    const sessionTime = childSnapshot.val();
+    if (typeof sessionTime === "number" && currentTime - sessionTime >= SESSION_EXPIRY) {
+      const key = childSnapshot.key;
+      if (key !== null) {
+        updates[`sessionTimestamps/${key}`] = null;
+        updates[`sessions/${key}`] = null;
+      }
+    }
+  });
+
+  if (Object.keys(updates).length > 0) {
+    await db.ref().update(updates);
+  }
+}
