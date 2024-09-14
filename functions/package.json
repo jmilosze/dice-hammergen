@@ -1,5 +1,7 @@
 {
   "name": "functions",
+  "private": true,
+  "type": "module",
   "scripts": {
     "lint": "eslint \"src/**/*\"",
     "build": "tsc",

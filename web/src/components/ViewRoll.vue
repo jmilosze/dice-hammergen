@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { DiceTable } from "@/dices";
+import { DiceTable } from "@/dice.ts";
 
 export default defineComponent({
   props: { diceTable: { type: Object as PropType<DiceTable>, required: true } },

@@ -68,17 +68,11 @@
           </div>
 
           <div v-else-if="sessionDoesNotExist">
-            <p class="is-size-5 has-text-centered has-text-danger">
-              Session does not exist.
-            </p>
-            <button @click="goBack" class="button is-success mt-2">
-              Go Back
-            </button>
+            <p class="is-size-5 has-text-centered has-text-danger">Session does not exist.</p>
+            <button @click="goBack" class="button is-success mt-2">Go Back</button>
           </div>
           <div v-else>
-            <p class="has-text-centered">
-              Checking Session...
-            </p>
+            <p class="has-text-centered">Checking Session...</p>
           </div>
           <div v-if="errors.length">
             <div v-for="error in errors" v-bind:key="error" class="help is-danger">{{ error }}</div>
@@ -93,15 +87,15 @@
 import { defineComponent } from "vue";
 import fb from "firebase/app";
 import rs from "randomstring";
-import { DisplayRoll, createNewDiceTable, reRollDices, dicesToStr, strToDices, validateDices } from "@/dices";
-import ViewRoll from "@/components/ViewRoll.vue";
-import randomName from "@/randomName";
+import { DisplayRoll, createNewDiceTable, reRollDices, dicesToStr, strToDices, validateDices } from "../dice.ts";
+import ViewRoll from "../components/ViewRoll.vue";
+import randomName from "../randomName";
 
 const ROLLS_TO_DISPLAY = 250;
 
 type SessionStatus = "exists" | "doesNotExist" | "undetermined";
 
-const timestamp = function() {
+const timestamp = function () {
   return Math.floor(Date.now() / 1000);
 };
 
@@ -110,12 +104,12 @@ export default defineComponent({
   components: { ViewRoll },
   props: {
     initialUsername: {
-      type: String
+      type: String,
     },
     sessionId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -125,7 +119,7 @@ export default defineComponent({
       displayRolls: [] as DisplayRoll[],
       dices: createNewDiceTable(),
       userId: "",
-      message: ""
+      message: "",
     };
   },
   created() {
@@ -161,17 +155,11 @@ export default defineComponent({
       }
 
       try {
-        const session = await this.$db
-          .ref(`sessions/${this.sessionId}`)
-          .limitToLast(1)
-          .once("value");
+        const session = await this.$db.ref(`sessions/${this.sessionId}`).limitToLast(1).once("value");
         if (!session.val()) {
           this.sessionStatus = "doesNotExist";
         } else {
-          this.$db
-            .ref(`sessions/${this.sessionId}`)
-            .limitToLast(ROLLS_TO_DISPLAY)
-            .on("child_added", this.receiveRoll);
+          this.$db.ref(`sessions/${this.sessionId}`).limitToLast(ROLLS_TO_DISPLAY).on("child_added", this.receiveRoll);
           this.sessionStatus = "exists";
           localStorage.setItem("lastSessionId", this.sessionId);
         }
@@ -190,7 +178,7 @@ export default defineComponent({
         msg: val.msg,
         roll: roll,
         timestamp: val.timestamp,
-        userId: val.userId
+        userId: val.userId,
       });
       if (this.displayRolls.length > ROLLS_TO_DISPLAY) {
         this.displayRolls.shift();
@@ -225,7 +213,7 @@ export default defineComponent({
         .ref(`sessions/${this.sessionId}`)
         .push()
         .set({ user: this.username, msg: msg, roll: roll, timestamp: timestamp(), userId: this.userId });
-    }
+    },
   },
   computed: {
     sessionExists(): boolean {
@@ -233,8 +221,8 @@ export default defineComponent({
     },
     sessionDoesNotExist(): boolean {
       return this.sessionStatus === "doesNotExist";
-    }
-  }
+    },
+  },
 });
 </script>
 

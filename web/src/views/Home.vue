@@ -3,9 +3,7 @@
     <div class="container is-flex-grow-5">
       <div class="columns is-centered">
         <div class="column is-6 has-text-centered">
-          <div class="is-size-4 mb-6 mt-6">
-            Roll RPG dices with fiends.
-          </div>
+          <div class="is-size-4 mb-6 mt-6">Roll RPG dices with fiends.</div>
           <div class="field input-max-width">
             <div class="control is-expanded">
               <input v-model="username" class="input" placeholder="Your Name" />
@@ -21,9 +19,7 @@
             </div>
           </div>
 
-          <div class="m-1">
-            or
-          </div>
+          <div class="m-1">or</div>
 
           <div class="field is-centered">
             <button
@@ -42,9 +38,7 @@
             <div v-for="error in errors" v-bind:key="error" class="help is-danger">{{ error }}</div>
           </div>
 
-          <div class="is-size-4 mb-3 mt-5 has-text-left">
-            What can I do here?
-          </div>
+          <div class="is-size-4 mb-3 mt-5 has-text-left">What can I do here?</div>
           <div class="has-text-left">
             <p class="mb-2">
               Hammergen Dice is an online multiplayer dice roller. You can roll RPG dices by yourself or with friends.
@@ -74,17 +68,17 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import axios from "axios";
-import randomName from "@/randomName";
+import randomName from "../randomName";
 
 export default defineComponent({
   name: "Home",
   props: {
     initialUsername: {
-      type: String
+      type: String,
     },
     initialSessionId: {
-      type: String
-    }
+      type: String,
+    },
   },
   data() {
     return {
@@ -93,7 +87,7 @@ export default defineComponent({
       lastSessionId: "",
       errors: [] as string[],
       submitting: false,
-      invalidSession: null as boolean | null
+      invalidSession: null as boolean | null,
     };
   },
   created() {
@@ -122,7 +116,7 @@ export default defineComponent({
     joinLastSession() {
       this.$router.push({
         name: "session",
-        params: { sessionId: this.lastSessionId, initialUsername: this.username }
+        params: { sessionId: this.lastSessionId, initialUsername: this.username },
       });
     },
     joinSession() {
@@ -134,7 +128,7 @@ export default defineComponent({
 
       this.$router.push({
         name: "session",
-        params: { sessionId: this.sessionId, initialUsername: this.username }
+        params: { sessionId: this.sessionId, initialUsername: this.username },
       });
     },
     async createSession() {
@@ -157,9 +151,9 @@ export default defineComponent({
 
       this.$router.push({
         name: "session",
-        params: { sessionId: this.sessionId, initialUsername: this.defaultUsername() }
+        params: { sessionId: this.sessionId, initialUsername: this.defaultUsername() },
       });
-    }
+    },
   },
   computed: {
     getDomain() {
@@ -167,8 +161,8 @@ export default defineComponent({
     },
     lastSessionDisabled(): boolean {
       return !this.lastSessionId;
-    }
-  }
+    },
+  },
 });
 </script>
 
