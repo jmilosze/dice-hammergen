@@ -47,7 +47,7 @@
             <p class="mb-2">
               If you want to roll with friends, create a new session and give them 6 character session ID number which
               they can you to join the session. Alternatively, after creating a session, you can just copy and give them
-              session URL, for example: {{ getDomain }}/s/V4A6nA. Session expires after 8 hours.
+              session URL, for example: {{ domain }}/s/V4A6nA. Session expires after 8 hours.
             </p>
           </div>
         </div>
@@ -65,105 +65,130 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref, computed } from "vue";
 import axios from "axios";
 import randomName from "../randomName";
 
-export default defineComponent({
-  name: "HomePage",
-  props: {
-    initialUsername: {
-      type: String,
-    },
-    initialSessionId: {
-      type: String,
-    },
-  },
-  data() {
-    return {
-      username: "",
-      sessionId: "",
-      lastSessionId: "",
-      errors: [] as string[],
-      submitting: false,
-      invalidSession: null as boolean | null,
-    };
-  },
-  computed: {
-    getDomain() {
-      return window.location.origin;
-    },
-    lastSessionDisabled(): boolean {
-      return !this.lastSessionId;
-    },
-  },
-  created() {
-    if (this.initialUsername) {
-      this.username = this.initialUsername;
-    }
-    if (this.initialSessionId) {
-      this.sessionId = this.initialSessionId;
-    }
-    this.getLastSessionId();
-  },
-  methods: {
-    getLastSessionId() {
-      const storedSession = localStorage.getItem("lastSessionId");
-      if (storedSession) {
-        this.lastSessionId = storedSession;
-      }
-    },
-    defaultUsername() {
-      return this.username ? this.username : randomName();
-    },
-    checkSessionId() {
-      const re = /^[a-zA-Z0-9]{6}$/;
-      this.invalidSession = !re.test(this.sessionId);
-    },
-    joinLastSession() {
-      this.$router.push({
-        name: "session",
-        params: { sessionId: this.lastSessionId, initialUsername: this.username },
-      });
-    },
-    joinSession() {
-      this.checkSessionId();
+const props = defineProps<{
+  initialUsername?: string;
+  initialSessionId?: string;
+}>();
 
-      if (this.invalidSession) {
-        return;
-      }
+const username = ref(props.initialUsername ? props.initialUsername : "");
+const sessionId = ref(props.initialSessionId ? props.initialSessionId : "");
+const lastSessionId = ref("");
+const errors = ref([] as string[]);
+const submitting = ref(false);
+const invalidSession = ref(null as boolean | null);
 
-      this.$router.push({
-        name: "session",
-        params: { sessionId: this.sessionId, initialUsername: this.username },
-      });
-    },
-    async createSession() {
-      this.submitting = true;
-      try {
-        const newSession = await axios.get(import.meta.env.VITE_FUNCTIONS_URL + "/createSession");
-        if (newSession.data.state === -1 || newSession.data.state === -2) {
-          this.errors.push(newSession.data.msg);
-        } else {
-          this.sessionId = newSession.data.data;
-        }
-      } catch {
-        this.errors.push("Server Error.");
-      }
+const storedSession = localStorage.getItem("lastSessionId");
+if (storedSession) {
+  lastSessionId.value = storedSession;
+}
 
-      if (!this.sessionId) {
-        this.submitting = false;
-        return;
-      }
-
-      this.$router.push({
-        name: "session",
-        params: { sessionId: this.sessionId, initialUsername: this.defaultUsername() },
-      });
-    },
-  },
+const domain = computed(() => {
+  return window.location.origin;
 });
+
+const lastSessionDisabled = computed(() => {
+  return !lastSessionId.value;
+});
+
+// export default defineComponent({
+//   name: "HomePage",
+//   props: {
+//     initialUsername: {
+//       type: String,
+//     },
+//     initialSessionId: {
+//       type: String,
+//     },
+//   },
+//   data() {
+//     return {
+//       username: "",
+//       sessionId: "",
+//       lastSessionId: "",
+//       errors: [] as string[],
+//       submitting: false,
+//       invalidSession: null as boolean | null,
+//     };
+//   },
+//   computed: {
+//     getDomain() {
+//       return window.location.origin;
+//     },
+//     lastSessionDisabled(): boolean {
+//       return !this.lastSessionId;
+//     },
+//   },
+//   created() {
+//     if (this.initialUsername) {
+//       this.username = this.initialUsername;
+//     }
+//     if (this.initialSessionId) {
+//       this.sessionId = this.initialSessionId;
+//     }
+//     this.getLastSessionId();
+//   },
+//   methods: {
+//     getLastSessionId() {
+//       const storedSession = localStorage.getItem("lastSessionId");
+//       if (storedSession) {
+//         this.lastSessionId = storedSession;
+//       }
+//     },
+//     defaultUsername() {
+//       return this.username ? this.username : randomName();
+//     },
+//     checkSessionId() {
+//       const re = /^[a-zA-Z0-9]{6}$/;
+//       this.invalidSession = !re.test(this.sessionId);
+//     },
+//     joinLastSession() {
+//       this.$router.push({
+//         name: "session",
+//         params: { sessionId: this.lastSessionId, initialUsername: this.username },
+//       });
+//     },
+//     joinSession() {
+//       this.checkSessionId();
+//
+//       if (this.invalidSession) {
+//         return;
+//       }
+//
+//       this.$router.push({
+//         name: "session",
+//         params: { sessionId: this.sessionId, initialUsername: this.username },
+//       });
+//     },
+//     async createSession() {
+//       this.submitting = true;
+//       try {
+//         const newSession = await axios.get(import.meta.env.VITE_FUNCTIONS_URL + "/createSession");
+//         if (newSession.data.state === -1 || newSession.data.state === -2) {
+//           this.errors.push(newSession.data.msg);
+//         } else {
+//           this.sessionId = newSession.data.data;
+//         }
+//       } catch {
+//         this.errors.push("Server Error.");
+//       }
+//
+//       if (!this.sessionId) {
+//         this.submitting = false;
+//         return;
+//       }
+//
+//       this.$router.push({
+//         name: "session",
+//         params: { sessionId: this.sessionId, initialUsername: this.defaultUsername() },
+//       });
+//     },
+//   },
+// });
 </script>
 
 <style scoped>
