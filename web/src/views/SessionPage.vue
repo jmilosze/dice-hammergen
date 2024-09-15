@@ -10,11 +10,11 @@
               </div>
               <div class="has-text-center is-align-self-center no-breakline mr-1 ml-1">|</div>
               <div class="is-align-self-center no-breakline mr-2">Name:</div>
-              <input class="input name-input-small is-flex-grow-5" v-model="username" />
+              <input v-model="username" class="input name-input-small is-flex-grow-5" />
             </div>
 
-            <div class="rolls mt-2 is-flex-grow-5 border" ref="rollWindow">
-              <div v-for="dRoll in displayRolls" :key="dRoll" class="mt-1 mb-1 has-text-left has-text-white">
+            <div ref="rollWindow" class="rolls mt-2 is-flex-grow-5 border">
+              <div v-for="dRoll in displayRolls" :key="dRoll.timestamp" class="mt-1 mb-1 has-text-left has-text-white">
                 <div v-if="!isCurrentUserRoll(dRoll)" class="roll has-background-info">
                   {{ dRoll.user }}
                   <br />
@@ -41,11 +41,11 @@
               <div class="is-flex is-flex-direction-row is-justify-content-space-between is-flex-wrap-wrap">
                 <div v-for="(diceData, diceType) in dices" :key="diceType">
                   <div>
-                    <img :src="require(`../assets/${diceType}.svg`)" :alt="diceType" class="dice" />
+                    <img :src="`image/dice/${diceType}.svg`" :alt="diceType.toString()" class="dice" />
                   </div>
                   <input
-                    class="input dice-number"
                     v-model="diceData.number"
+                    class="input dice-number"
                     type="number"
                     min="0"
                     max="99"
@@ -55,7 +55,7 @@
               </div>
 
               <div class="mt-2">
-                <input class="input" v-model="message" v-on:keyup.enter="sendRoll" type="text" placeholder="Message" />
+                <input v-model="message" class="input" type="text" placeholder="Message" @keyup.enter="sendRoll" />
               </div>
 
               <div class="mt-2 is-flex is-flex-direction-row is-flex-wrap-wrap">
@@ -69,13 +69,13 @@
 
           <div v-else-if="sessionDoesNotExist">
             <p class="is-size-5 has-text-centered has-text-danger">Session does not exist.</p>
-            <button @click="goBack" class="button is-success mt-2">Go Back</button>
+            <button class="button is-success mt-2" @click="goBack">Go Back</button>
           </div>
           <div v-else>
             <p class="has-text-centered">Checking Session...</p>
           </div>
           <div v-if="errors.length">
-            <div v-for="error in errors" v-bind:key="error" class="help is-danger">{{ error }}</div>
+            <div v-for="error in errors" :key="error" class="help is-danger">{{ error }}</div>
           </div>
         </div>
       </div>
@@ -83,13 +83,13 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import fb from "firebase/app";
+<script setup lang="ts">
+import { ref, computed } from "vue";
 import rs from "randomstring";
 import { DisplayRoll, createNewDiceTable, reRollDices, dicesToStr, strToDices, validateDices } from "../dice.ts";
 import ViewRoll from "../components/ViewRoll.vue";
 import randomName from "../randomName";
+import { useRouter } from "vue-router";
 
 const ROLLS_TO_DISPLAY = 250;
 
@@ -99,131 +99,117 @@ const timestamp = function () {
   return Math.floor(Date.now() / 1000);
 };
 
-export default defineComponent({
-  name: "SessionPage",
-  components: { ViewRoll },
-  props: {
-    initialUsername: {
-      type: String,
-    },
-    sessionId: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      username: randomName(),
-      sessionStatus: "undetermined" as SessionStatus,
-      errors: [] as string[],
-      displayRolls: [] as DisplayRoll[],
-      dices: createNewDiceTable(),
-      userId: "",
-      message: "",
-    };
-  },
-  created() {
-    this.getUserId();
-    this.setSessionStatus();
-  },
-  beforeUnmount() {
-    this.$db.ref(`sessions/${this.sessionId}`).off("child_added", this.receiveRoll);
-  },
-  methods: {
-    isCurrentUserRoll(roll: DisplayRoll): boolean {
-      return roll.userId === this.userId;
-    },
-    getUserId() {
-      const storedUserId = localStorage.getItem("userId");
-      if (storedUserId) {
-        this.userId = storedUserId;
-      } else {
-        this.userId = rs.generate({ length: 16, charset: "alphanumeric" });
-        localStorage.setItem("userId", this.userId);
-      }
-    },
-    goBack() {
-      if (this.initialUsername) {
-        this.$router.push({ name: "home", params: { initialUsername: this.initialUsername } });
-      } else {
-        this.$router.push({ name: "home" });
-      }
-    },
-    async setSessionStatus() {
-      if (this.initialUsername) {
-        this.username = this.initialUsername;
-      }
+const props = defineProps<{
+  initialUsername?: string;
+  sessionId: string;
+}>();
 
-      try {
-        const session = await this.$db.ref(`sessions/${this.sessionId}`).limitToLast(1).once("value");
-        if (!session.val()) {
-          this.sessionStatus = "doesNotExist";
-        } else {
-          this.$db.ref(`sessions/${this.sessionId}`).limitToLast(ROLLS_TO_DISPLAY).on("child_added", this.receiveRoll);
-          this.sessionStatus = "exists";
-          localStorage.setItem("lastSessionId", this.sessionId);
-        }
-      } catch {
-        this.errors.push("Server Error.");
-      }
-    },
-    clearDices() {
-      this.dices = createNewDiceTable();
-    },
-    receiveRoll(child: fb.database.DataSnapshot) {
-      const val = child.val();
-      const roll = strToDices(val.roll);
-      this.displayRolls.push({
-        user: val.user,
-        msg: val.msg,
-        roll: roll,
-        timestamp: val.timestamp,
-        userId: val.userId,
-      });
-      if (this.displayRolls.length > ROLLS_TO_DISPLAY) {
-        this.displayRolls.shift();
-      }
+const username = ref(randomName());
+const sessionStatus = ref("undetermined" as SessionStatus);
+const errors = ref([] as string[]);
+const displayRolls = ref([] as DisplayRoll[]);
+const dices = ref(createNewDiceTable());
+const userId = ref("");
+const message = ref("");
 
-      const rollWindow = this.$refs.rollWindow as Element;
-      if (Math.abs(rollWindow.scrollHeight - rollWindow.scrollTop - rollWindow.clientHeight) <= 2) {
-        this.$nextTick(() => (rollWindow.scrollTop = rollWindow.scrollHeight));
-      }
-    },
-    async sendRoll() {
-      const rollWindow = this.$refs.rollWindow as Element;
-      rollWindow.scrollTop = rollWindow.scrollHeight;
+const router = useRouter();
 
-      let msg = "";
-      let roll = "";
+const storedUserId = localStorage.getItem("userId");
+if (storedUserId) {
+  userId.value = storedUserId;
+} else {
+  userId.value = rs.generate({ length: 16, charset: "alphanumeric" });
+  localStorage.setItem("userId", userId.value);
+}
 
-      if (this.message) {
-        msg = this.message;
-        this.message = "";
-      } else {
-        validateDices(this.dices);
-        reRollDices(this.dices);
-        roll = dicesToStr(this.dices);
-      }
-
-      if (!msg && !roll) {
-        return;
-      }
-
-      await this.$db
-        .ref(`sessions/${this.sessionId}`)
-        .push()
-        .set({ user: this.username, msg: msg, roll: roll, timestamp: timestamp(), userId: this.userId });
-    },
-  },
-  computed: {
-    sessionExists(): boolean {
-      return this.sessionStatus === "exists";
-    },
-    sessionDoesNotExist(): boolean {
-      return this.sessionStatus === "doesNotExist";
-    },
-  },
+const sessionExists = computed(() => {
+  return sessionStatus.value === "exists";
 });
+
+const sessionDoesNotExist = computed(() => {
+  return sessionStatus.value === "doesNotExist";
+});
+
+async function setSessionStatus() {
+  if (props.initialUsername) {
+    username.value = props.initialUsername;
+  }
+
+  try {
+    const session = await this.$db.ref(`sessions/${props.sessionId}`).limitToLast(1).once("value");
+    if (!session.val()) {
+      sessionStatus.value = "doesNotExist";
+    } else {
+      this.$db.ref(`sessions/${props.sessionId}`).limitToLast(ROLLS_TO_DISPLAY).on("child_added", this.receiveRoll);
+      sessionStatus.value = "exists";
+      localStorage.setItem("lastSessionId", props.sessionId);
+    }
+  } catch {
+    errors.value.push("Server Error.");
+  }
+}
+
+function receiveRoll(child: fb.database.DataSnapshot) {
+  const val = child.val();
+  const roll = strToDices(val.roll);
+  displayRolls.value.push({
+    user: val.user,
+    msg: val.msg,
+    roll: roll,
+    timestamp: val.timestamp,
+    userId: val.userId,
+  });
+  if (displayRolls.value.length > ROLLS_TO_DISPLAY) {
+    displayRolls.value.shift();
+  }
+
+  const rollWindow = this.$refs.rollWindow as Element;
+  if (Math.abs(rollWindow.scrollHeight - rollWindow.scrollTop - rollWindow.clientHeight) <= 2) {
+    this.$nextTick(() => (rollWindow.scrollTop = rollWindow.scrollHeight));
+  }
+}
+
+async function sendRoll() {
+  const rollWindow = this.$refs.rollWindow as Element;
+  rollWindow.scrollTop = rollWindow.scrollHeight;
+
+  let msg = "";
+  let roll = "";
+
+  if (message.value) {
+    msg = message.value;
+    message.value = "";
+  } else {
+    validateDices(dices.value);
+    reRollDices(dices.value);
+    roll = dicesToStr(dices.value);
+  }
+
+  if (!msg && !roll) {
+    return;
+  }
+
+  await this.$db
+    .ref(`sessions/${props.sessionId}`)
+    .push()
+    .set({ user: username.value, msg: msg, roll: roll, timestamp: timestamp(), userId: userId.value });
+}
+
+function clearDices() {
+  dices.value = createNewDiceTable();
+}
+
+function isCurrentUserRoll(roll: DisplayRoll): boolean {
+  return roll.userId === userId.value;
+}
+
+function goBack() {
+  if (props.initialUsername) {
+    router.push({ name: "home", params: { initialUsername: props.initialUsername } });
+  } else {
+    router.push({ name: "home" });
+  }
+}
 </script>
 
 <style scoped>
