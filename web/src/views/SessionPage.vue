@@ -84,12 +84,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, nextTick } from "vue";
 import rs from "randomstring";
 import { DisplayRoll, createNewDiceTable, reRollDices, dicesToStr, strToDices, validateDices } from "../dice.ts";
 import ViewRoll from "../components/ViewRoll.vue";
 import randomName from "../randomName";
 import { useRouter } from "vue-router";
+import { useDatabase } from "vuefire";
 
 const ROLLS_TO_DISPLAY = 250;
 
@@ -111,8 +112,10 @@ const displayRolls = ref([] as DisplayRoll[]);
 const dices = ref(createNewDiceTable());
 const userId = ref("");
 const message = ref("");
+const rollWindow = ref<HTMLDivElement | null>(null);
 
 const router = useRouter();
+const db = useDatabase();
 
 const storedUserId = localStorage.getItem("userId");
 if (storedUserId) {
@@ -163,15 +166,22 @@ function receiveRoll(child: fb.database.DataSnapshot) {
     displayRolls.value.shift();
   }
 
-  const rollWindow = this.$refs.rollWindow as Element;
-  if (Math.abs(rollWindow.scrollHeight - rollWindow.scrollTop - rollWindow.clientHeight) <= 2) {
-    this.$nextTick(() => (rollWindow.scrollTop = rollWindow.scrollHeight));
+  if (
+    rollWindow.value !== null &&
+    Math.abs(rollWindow.value.scrollHeight - rollWindow.value.scrollTop - rollWindow.value.clientHeight) <= 2
+  ) {
+    nextTick(() => {
+      if (rollWindow.value) {
+        rollWindow.value.scrollTop = rollWindow.value.scrollHeight;
+      }
+    });
   }
 }
 
 async function sendRoll() {
-  const rollWindow = this.$refs.rollWindow as Element;
-  rollWindow.scrollTop = rollWindow.scrollHeight;
+  if (rollWindow.value !== null) {
+    rollWindow.value.scrollTop = rollWindow.value.scrollHeight;
+  }
 
   let msg = "";
   let roll = "";
