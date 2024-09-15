@@ -1,15 +1,14 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import { VueFire } from "vuefire";
 import router from "./router";
 import "bulma/css/bulma.css";
-import { db } from "firebase/database";
+import { firebaseApp } from "firebase";
 
-declare module "@vue/runtime-core" {
-  export interface ComponentCustomProperties {
-    $db: typeof db;
-  }
-}
+const app = createApp(App);
 
-const app = createApp(App).use(router);
+app.use(router);
 app.config.globalProperties.$db = db;
+app.use(VueFire, { firebaseApp });
+
 app.mount("#app");

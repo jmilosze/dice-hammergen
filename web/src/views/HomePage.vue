@@ -71,7 +71,7 @@ import axios from "axios";
 import randomName from "../randomName";
 
 export default defineComponent({
-  name: "Home",
+  name: "HomePage",
   props: {
     initialUsername: {
       type: String,
@@ -89,6 +89,14 @@ export default defineComponent({
       submitting: false,
       invalidSession: null as boolean | null,
     };
+  },
+  computed: {
+    getDomain() {
+      return window.location.origin;
+    },
+    lastSessionDisabled(): boolean {
+      return !this.lastSessionId;
+    },
   },
   created() {
     if (this.initialUsername) {
@@ -134,13 +142,13 @@ export default defineComponent({
     async createSession() {
       this.submitting = true;
       try {
-        const newSession = await axios.get(process.env.VUE_APP_FUNCTIONS_URL + "/createSession");
+        const newSession = await axios.get(import.meta.env.VITE_FUNCTIONS_URL + "/createSession");
         if (newSession.data.state === -1 || newSession.data.state === -2) {
           this.errors.push(newSession.data.msg);
         } else {
           this.sessionId = newSession.data.data;
         }
-      } catch (err) {
+      } catch {
         this.errors.push("Server Error.");
       }
 
@@ -153,14 +161,6 @@ export default defineComponent({
         name: "session",
         params: { sessionId: this.sessionId, initialUsername: this.defaultUsername() },
       });
-    },
-  },
-  computed: {
-    getDomain() {
-      return window.location.origin;
-    },
-    lastSessionDisabled(): boolean {
-      return !this.lastSessionId;
     },
   },
 });

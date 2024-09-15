@@ -100,7 +100,7 @@ const timestamp = function () {
 };
 
 export default defineComponent({
-  name: "Session",
+  name: "SessionPage",
   components: { ViewRoll },
   props: {
     initialUsername: {
@@ -163,7 +163,7 @@ export default defineComponent({
           this.sessionStatus = "exists";
           localStorage.setItem("lastSessionId", this.sessionId);
         }
-      } catch (err) {
+      } catch {
         this.errors.push("Server Error.");
       }
     },
