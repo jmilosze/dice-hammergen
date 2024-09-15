@@ -15,7 +15,7 @@
               <p v-if="invalidSession" class="help is-danger">ID must be a combination of 6 letters and/or numbers.</p>
             </div>
             <div class="control">
-              <button @click="joinSession" class="button is-success">Join</button>
+              <button class="button is-success" @click="joinSession">Join</button>
             </div>
           </div>
 
@@ -24,18 +24,18 @@
           <div class="field is-centered">
             <button
               class="ml-1 mr-1 mb-2"
-              @click="createSession"
               :class="submitting ? 'button is-success is-loading' : 'button is-success'"
+              @click="createSession"
             >
               Create Session
             </button>
-            <button @click="joinLastSession" :disabled="lastSessionDisabled" class="button is-success ml-1 mr-1">
+            <button :disabled="lastSessionDisabled" class="button is-success ml-1 mr-1" @click="joinLastSession">
               Join Last Session
             </button>
           </div>
 
           <div v-if="errors.length">
-            <div v-for="error in errors" v-bind:key="error" class="help is-danger">{{ error }}</div>
+            <div v-for="error in errors" :key="error" class="help is-danger">{{ error }}</div>
           </div>
 
           <div class="is-size-4 mb-3 mt-5 has-text-left">What can I do here?</div>
@@ -69,6 +69,7 @@
 import { ref, computed } from "vue";
 import axios from "axios";
 import randomName from "../randomName";
+import { useRouter } from "vue-router";
 
 const props = defineProps<{
   initialUsername?: string;
@@ -81,6 +82,8 @@ const lastSessionId = ref("");
 const errors = ref([] as string[]);
 const submitting = ref(false);
 const invalidSession = ref(null as boolean | null);
+
+const router = useRouter();
 
 const storedSession = localStorage.getItem("lastSessionId");
 if (storedSession) {
@@ -95,100 +98,58 @@ const lastSessionDisabled = computed(() => {
   return !lastSessionId.value;
 });
 
-// export default defineComponent({
-//   name: "HomePage",
-//   props: {
-//     initialUsername: {
-//       type: String,
-//     },
-//     initialSessionId: {
-//       type: String,
-//     },
-//   },
-//   data() {
-//     return {
-//       username: "",
-//       sessionId: "",
-//       lastSessionId: "",
-//       errors: [] as string[],
-//       submitting: false,
-//       invalidSession: null as boolean | null,
-//     };
-//   },
-//   computed: {
-//     getDomain() {
-//       return window.location.origin;
-//     },
-//     lastSessionDisabled(): boolean {
-//       return !this.lastSessionId;
-//     },
-//   },
-//   created() {
-//     if (this.initialUsername) {
-//       this.username = this.initialUsername;
-//     }
-//     if (this.initialSessionId) {
-//       this.sessionId = this.initialSessionId;
-//     }
-//     this.getLastSessionId();
-//   },
-//   methods: {
-//     getLastSessionId() {
-//       const storedSession = localStorage.getItem("lastSessionId");
-//       if (storedSession) {
-//         this.lastSessionId = storedSession;
-//       }
-//     },
-//     defaultUsername() {
-//       return this.username ? this.username : randomName();
-//     },
-//     checkSessionId() {
-//       const re = /^[a-zA-Z0-9]{6}$/;
-//       this.invalidSession = !re.test(this.sessionId);
-//     },
-//     joinLastSession() {
-//       this.$router.push({
-//         name: "session",
-//         params: { sessionId: this.lastSessionId, initialUsername: this.username },
-//       });
-//     },
-//     joinSession() {
-//       this.checkSessionId();
-//
-//       if (this.invalidSession) {
-//         return;
-//       }
-//
-//       this.$router.push({
-//         name: "session",
-//         params: { sessionId: this.sessionId, initialUsername: this.username },
-//       });
-//     },
-//     async createSession() {
-//       this.submitting = true;
-//       try {
-//         const newSession = await axios.get(import.meta.env.VITE_FUNCTIONS_URL + "/createSession");
-//         if (newSession.data.state === -1 || newSession.data.state === -2) {
-//           this.errors.push(newSession.data.msg);
-//         } else {
-//           this.sessionId = newSession.data.data;
-//         }
-//       } catch {
-//         this.errors.push("Server Error.");
-//       }
-//
-//       if (!this.sessionId) {
-//         this.submitting = false;
-//         return;
-//       }
-//
-//       this.$router.push({
-//         name: "session",
-//         params: { sessionId: this.sessionId, initialUsername: this.defaultUsername() },
-//       });
-//     },
-//   },
-// });
+function defaultUsername() {
+  return username.value ? username.value : randomName();
+}
+
+function checkSessionId() {
+  const re = /^[a-zA-Z0-9]{6}$/;
+  invalidSession.value = !re.test(sessionId.value);
+}
+
+function joinLastSession() {
+  router.push({
+    name: "session",
+    params: { sessionId: lastSessionId.value, initialUsername: username.value },
+  });
+}
+
+function joinSession() {
+  checkSessionId();
+
+  if (invalidSession.value) {
+    return;
+  }
+
+  router.push({
+    name: "session",
+    params: { sessionId: sessionId.value, initialUsername: username.value },
+  });
+}
+
+async function createSession() {
+  submitting.value = true;
+  try {
+    const newSession = await axios.get(import.meta.env.VITE_FUNCTIONS_URL + "/createSession");
+    if (newSession.data.state === -1 || newSession.data.state === -2) {
+      errors.value.push(newSession.data.msg);
+    } else {
+      sessionId.value = newSession.data.data;
+    }
+  } catch {
+    errors.value.push("Server Error.");
+  }
+
+  if (!sessionId.value) {
+    submitting.value = false;
+    return;
+  }
+
+  await router.push({
+    name: "session",
+    params: { sessionId: sessionId.value, initialUsername: defaultUsername() },
+  });
+}
 </script>
 
 <style scoped>
