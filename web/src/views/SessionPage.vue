@@ -84,13 +84,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from "vue";
+import { ref, computed, nextTick, onMounted, onUnmounted } from "vue";
 import rs from "randomstring";
 import { DisplayRoll, createNewDiceTable, reRollDices, dicesToStr, strToDices, validateDices } from "../dice.ts";
 import ViewRoll from "../components/ViewRoll.vue";
 import randomName from "../randomName";
 import { useRouter } from "vue-router";
-import { useDatabase } from "vuefire";
+import { db } from "../firebase.ts";
+import {
+  ref as firebaseRef,
+  limitToLast,
+  query,
+  get,
+  onChildAdded,
+  push,
+  set,
+  off,
+  DataSnapshot,
+} from "firebase/database";
 
 const ROLLS_TO_DISPLAY = 250;
 
@@ -115,7 +126,8 @@ const message = ref("");
 const rollWindow = ref<HTMLDivElement | null>(null);
 
 const router = useRouter();
-const db = useDatabase();
+const sessionRef = firebaseRef(db, `sessions/${props.sessionId}`);
+const subQuery = query(sessionRef, limitToLast(ROLLS_TO_DISPLAY));
 
 const storedUserId = localStorage.getItem("userId");
 if (storedUserId) {
@@ -139,11 +151,13 @@ async function setSessionStatus() {
   }
 
   try {
-    const session = await this.$db.ref(`sessions/${props.sessionId}`).limitToLast(1).once("value");
+    const session = await get(query(sessionRef, limitToLast(1)));
     if (!session.val()) {
       sessionStatus.value = "doesNotExist";
     } else {
-      this.$db.ref(`sessions/${props.sessionId}`).limitToLast(ROLLS_TO_DISPLAY).on("child_added", this.receiveRoll);
+      onChildAdded(subQuery, (snapshot) => {
+        receiveRoll(snapshot);
+      });
       sessionStatus.value = "exists";
       localStorage.setItem("lastSessionId", props.sessionId);
     }
@@ -152,7 +166,15 @@ async function setSessionStatus() {
   }
 }
 
-function receiveRoll(child: fb.database.DataSnapshot) {
+onMounted(() => {
+  setSessionStatus();
+});
+
+onUnmounted(() => {
+  off(subQuery);
+});
+
+function receiveRoll(child: DataSnapshot) {
   const val = child.val();
   const roll = strToDices(val.roll);
   displayRolls.value.push({
@@ -199,10 +221,15 @@ async function sendRoll() {
     return;
   }
 
-  await this.$db
-    .ref(`sessions/${props.sessionId}`)
-    .push()
-    .set({ user: username.value, msg: msg, roll: roll, timestamp: timestamp(), userId: userId.value });
+  const newRollRef = push(sessionRef);
+
+  await set(newRollRef, {
+    user: username.value,
+    msg: msg,
+    roll: roll,
+    timestamp: timestamp(),
+    userId: userId.value,
+  });
 }
 
 function clearDices() {
