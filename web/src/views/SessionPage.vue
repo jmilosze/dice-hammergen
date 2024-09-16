@@ -85,7 +85,6 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted, onUnmounted } from "vue";
-import rs from "randomstring";
 import { DisplayRoll, createNewDiceTable, reRollDices, dicesToStr, strToDices, validateDices } from "../dice.ts";
 import ViewRoll from "../components/ViewRoll.vue";
 import randomName from "../randomName";
@@ -102,6 +101,7 @@ import {
   off,
   DataSnapshot,
 } from "firebase/database";
+import createRandomString from "../randomString.ts";
 
 const ROLLS_TO_DISPLAY = 250;
 
@@ -133,7 +133,7 @@ const storedUserId = localStorage.getItem("userId");
 if (storedUserId) {
   userId.value = storedUserId;
 } else {
-  userId.value = rs.generate({ length: 16, charset: "alphanumeric" });
+  userId.value = createRandomString(16);
   localStorage.setItem("userId", userId.value);
 }
 
