@@ -145,7 +145,7 @@ const sessionDoesNotExist = computed(() => {
   return sessionStatus.value === "doesNotExist";
 });
 
-async function setSessionStatus() {
+onMounted(async () => {
   if (props.initialUsername) {
     username.value = props.initialUsername;
   }
@@ -164,10 +164,6 @@ async function setSessionStatus() {
   } catch {
     errors.value.push("Server Error.");
   }
-}
-
-onMounted(() => {
-  setSessionStatus();
 });
 
 onUnmounted(() => {
