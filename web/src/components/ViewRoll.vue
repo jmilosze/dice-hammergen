@@ -2,7 +2,7 @@
   <div>
     <span v-for="dice in dicesDisplay" :key="dice.diceType">
       <span>{{ dice.prefix }}</span>
-      <img :src="require(`images/dice/${dice.diceType}.svg`)" :alt="dice.diceType" class="dice" />
+      <img :src="`/images/dice/${dice.diceType}.svg`" :alt="dice.diceType" class="dice" />
       <span> {{ dice.suffix }} </span>
     </span>
     <span> {{ rollSum }}</span>

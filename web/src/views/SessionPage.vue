@@ -39,9 +39,9 @@
 
             <div class="mt-2">
               <div class="is-flex is-flex-direction-row is-justify-content-space-between is-flex-wrap-wrap">
-                <div v-for="(diceData, diceType) in dices" :key="diceType">
+                <div v-for="(diceData, diceType) in dice" :key="diceType">
                   <div>
-                    <img :src="`image/dice/${diceType}.svg`" :alt="diceType.toString()" class="dice" />
+                    <img :src="`/images/dice/${diceType}.svg`" :alt="diceType.toString()" class="dice" />
                   </div>
                   <input
                     v-model="diceData.number"
@@ -120,7 +120,7 @@ const username = ref(randomName());
 const sessionStatus = ref("undetermined" as SessionStatus);
 const errors = ref([] as string[]);
 const displayRolls = ref([] as DisplayRoll[]);
-const dices = ref(createNewDiceTable());
+const dice = ref(createNewDiceTable());
 const userId = ref("");
 const message = ref("");
 const rollWindow = ref<HTMLDivElement | null>(null);
@@ -208,9 +208,9 @@ async function sendRoll() {
     msg = message.value;
     message.value = "";
   } else {
-    validateDices(dices.value);
-    reRollDices(dices.value);
-    roll = dicesToStr(dices.value);
+    validateDices(dice.value);
+    reRollDices(dice.value);
+    roll = dicesToStr(dice.value);
   }
 
   if (!msg && !roll) {
@@ -229,7 +229,7 @@ async function sendRoll() {
 }
 
 function clearDices() {
-  dices.value = createNewDiceTable();
+  dice.value = createNewDiceTable();
 }
 
 function isCurrentUserRoll(roll: DisplayRoll): boolean {
