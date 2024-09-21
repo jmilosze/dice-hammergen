@@ -1,34 +1,30 @@
 <template>
-  <nav id="navbar" class="has-background-primary-dark">
-    <div class="container">
-      <div class="has-text-centered is-size-5">
-        <router-link to="/" class="has-text-light mr-3">Hammergen Dice</router-link>
+  <div class="min-h-dvh flex flex-col">
+    <div class="h-14 bg-emerald-600">
+      <div class="container mx-auto h-full flex flex-col justify-center">
+        <div class="text-neutral-100 text-xl mx-auto">
+          <router-link to="/" class="has-text-light mr-3">Hammergen Dice</router-link>
+        </div>
       </div>
     </div>
-  </nav>
 
-  <section id="main-section" class="section">
-    <router-view :key="$route.fullPath" />
-  </section>
+    <div class="container py-12 max-w-6xl mx-auto flex-grow">
+      <router-view :key="$route.fullPath" />
+    </div>
+    <div class="container mx-auto max-w-6xl mt-5">
+      <div class="mx-auto my-2 w-fit">
+        Contact: <a href="mailto:admin@hammergen.net" class="text-blue-500 hover:text-blue-900">admin@hammergen.net</a>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "App"
+  name: "App",
 });
 </script>
 
-<style>
-#main-section {
-  padding-top: 0;
-  padding-bottom: 0;
-  height: 94vh;
-}
-
-#navbar {
-  height: 6vh;
-  line-height: 6vh;
-}
-</style>
+<style></style>
