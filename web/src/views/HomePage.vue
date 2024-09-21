@@ -9,23 +9,29 @@
       />
     </div>
   </div>
-  <div class="mt-2 max-w-md mx-auto px-5 flex items-stretch">
-    <div class="flex-grow">
-      <input
-        v-model="sessionId"
-        class="border-b border-l border-t border-neutral-300 rounded-l w-full h-10 px-2 focus:outline-emerald-700 focus:border-transparent focus:outline-2"
-        placeholder="Session ID"
-      />
-      <p v-if="invalidSession" class="help is-danger">ID must be a combination of 6 letters and/or numbers.</p>
+  <div class="mt-2 max-w-md mx-auto px-5">
+    <div
+      class="flex items-stretch focus-within:outline-emerald-700 focus-within:outline-2 focus-within:outline rounded"
+    >
+      <div class="flex-grow">
+        <input
+          v-model="sessionId"
+          class="border-b border-l border-t border-neutral-300 rounded-l w-full h-10 px-2 focus:border-transparent outline-0"
+          placeholder="Session ID"
+        />
+      </div>
+      <div class="bg-emerald-500 rounded-r hover:bg-emerald-700">
+        <button class="px-5 h-10 text-neutral-100 w-full" @click="joinSession">Join</button>
+      </div>
     </div>
-    <div class="bg-emerald-500 rounded-r hover:bg-emerald-700">
-      <button class="px-5 h-10 text-neutral-100 w-full" @click="joinSession">Join</button>
-    </div>
+    <p v-if="invalidSession" class="mt-1 text-red-600 text-xs text-center">
+      ID must be a combination of 6 letters and/or numbers.
+    </p>
   </div>
 
-  <div class="m-1">or</div>
+  <div class="mx-auto text-center my-1">or</div>
 
-  <div class="field is-centered">
+  <div class="mx-auto">
     <button
       class="ml-1 mr-1 mb-2"
       :class="submitting ? 'button is-success is-loading' : 'button is-success'"
