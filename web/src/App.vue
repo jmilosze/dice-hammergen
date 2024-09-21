@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-dvh flex flex-col">
-    <div class="h-14 bg-emerald-600">
+    <div class="h-14 bg-emerald-500">
       <div class="container mx-auto h-full flex flex-col justify-center">
-        <div class="text-neutral-100 text-xl mx-auto">
-          <router-link to="/" class="has-text-light mr-3">Hammergen Dice</router-link>
+        <div class="text-neutral-100 text-xl font-semibold mx-auto">
+          <router-link to="/" class="hover:text-neutral-200">Hammergen Dice</router-link>
         </div>
       </div>
     </div>

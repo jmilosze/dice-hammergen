@@ -1,17 +1,25 @@
 <template>
   <div class="text-2xl text-center">Roll RPG dices with fiends.</div>
   <div class="field input-max-width">
-    <div class="control is-expanded">
-      <input v-model="username" class="input" placeholder="Your Name" />
+    <div class="mt-10 max-w-md mx-auto px-5">
+      <input
+        v-model="username"
+        class="border border-neutral-300 rounded w-full h-10 px-2 focus:outline-emerald-700 focus:border-transparent focus:outline focus:outline-2 disabled:bg-neutral-200"
+        placeholder="Your Name"
+      />
     </div>
   </div>
-  <div class="field has-addons input-max-width mb-1">
-    <div class="control is-expanded">
-      <input v-model="sessionId" class="input" placeholder="Session ID" />
+  <div class="mt-2 max-w-md mx-auto px-5 flex items-stretch">
+    <div class="flex-grow">
+      <input
+        v-model="sessionId"
+        class="border-b border-l border-t border-neutral-300 rounded-l w-full h-10 px-2 focus:outline-emerald-700 focus:border-transparent focus:outline-2"
+        placeholder="Session ID"
+      />
       <p v-if="invalidSession" class="help is-danger">ID must be a combination of 6 letters and/or numbers.</p>
     </div>
-    <div class="control">
-      <button class="button is-success" @click="joinSession">Join</button>
+    <div class="bg-emerald-500 rounded-r hover:bg-emerald-700">
+      <button class="px-5 h-10 text-neutral-100 w-full" @click="joinSession">Join</button>
     </div>
   </div>
 
