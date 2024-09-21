@@ -11,7 +11,7 @@
   </div>
   <div class="mt-2 max-w-md mx-auto px-5">
     <div
-      class="flex items-stretch focus-within:outline-emerald-700 focus-within:outline-2 focus-within:outline rounded"
+      class="flex items-stretch focus-within:outline-emerald-600 focus-within:outline-2 focus-within:outline rounded"
     >
       <div class="flex-grow">
         <input
@@ -20,7 +20,7 @@
           placeholder="Session ID"
         />
       </div>
-      <div class="bg-emerald-500 rounded-r hover:bg-emerald-700">
+      <div class="bg-emerald-500 rounded-r hover:bg-emerald-600">
         <button class="px-5 h-10 text-neutral-100 w-full" @click="joinSession">Join</button>
       </div>
     </div>

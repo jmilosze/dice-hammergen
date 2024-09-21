@@ -3,7 +3,7 @@
     <div class="h-14 bg-emerald-500">
       <div class="container mx-auto h-full flex flex-col justify-center">
         <div class="text-neutral-100 text-xl font-semibold mx-auto">
-          <router-link to="/" class="hover:text-neutral-200">Hammergen Dice</router-link>
+          <router-link to="/" class="hover:bg-emerald-600 px-2 py-3 rounded">Hammergen Dice</router-link>
         </div>
       </div>
     </div>
