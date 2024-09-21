@@ -1,5 +1,5 @@
 <template>
-  <div class="text-2xl text-center">Roll RPG dices with fiends.</div>
+  <div class="text-2xl text-center">Roll RPG dices with friends.</div>
   <div class="field input-max-width">
     <div class="mt-10 max-w-md mx-auto px-5">
       <input
