@@ -1,61 +1,71 @@
 <template>
-  <div class="max-w-3xl mx-auto">
-    <div class="text-2xl text-center">Roll RPG dice with friends</div>
-    <div class="mt-10 max-w-md mx-auto">
-      <div
-        class="mt-2 flex items-stretch focus-within:outline-emerald-600 focus-within:outline-2 focus-within:outline rounded"
-      >
-        <div class="flex-grow">
-          <input
-            v-model="sessionId"
-            class="border-b border-l border-t border-neutral-300 rounded-l w-full h-10 px-2 focus:border-transparent outline-0"
-            placeholder="Session ID"
-          />
+  <div class="max-w-3xl mx-auto flex flex-col fit-screen">
+    <div class="flex-grow">
+      <div class="text-2xl text-center mt-12">Roll RPG dice with friends</div>
+      <div class="mt-10 max-w-md mx-auto">
+        <div
+          class="mt-2 flex items-stretch focus-within:outline-emerald-600 focus-within:outline-2 focus-within:outline rounded"
+        >
+          <div class="flex-grow">
+            <input
+              v-model="sessionId"
+              class="border-b border-l border-t border-neutral-300 rounded-l w-full px-2 py-1.5 focus:border-transparent outline-0"
+              placeholder="Session ID"
+            />
+          </div>
+          <div class="bg-emerald-500 rounded-r hover:bg-emerald-600">
+            <button class="px-5 py-1.5 text-neutral-100 w-full" @click="joinSession">Join</button>
+          </div>
         </div>
-        <div class="bg-emerald-500 rounded-r hover:bg-emerald-600">
-          <button class="px-5 h-10 text-neutral-100 w-full" @click="joinSession">Join</button>
+        <p v-if="invalidSession" class="mt-1 text-red-500 text-xs text-center">
+          ID must be a combination of 6 letters and/or numbers.
+        </p>
+      </div>
+
+      <div class="mx-auto text-center my-1">or</div>
+
+      <div class="mx-auto flex justify-center gap-4">
+        <button
+          class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-2 text-neutral-100 w-32"
+          :class="submitting ? 'pointer-events-none bg-emerald-600' : ''"
+          @click="createSession"
+        >
+          <AnimatedSpinner v-if="submitting" class="mx-auto" />
+          {{ submitting ? "" : "Create Session" }}
+        </button>
+        <button
+          :disabled="lastSessionDisabled"
+          class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-2 text-neutral-100"
+          @click="joinLastSession"
+        >
+          Join Last Session
+        </button>
+      </div>
+
+      <div v-if="errors.length" class="mt-2">
+        <div v-for="error in errors" :key="error" class="text-red-500 text-center">{{ error }}</div>
+      </div>
+
+      <div class="text-2xl mb-4 mt-8">What can I do here?</div>
+      <div>
+        <p class="mb-2">
+          Hammergen Dice is an online multiplayer dice roller. You can roll RPG dice by yourself or with friends. To
+          start rolling simply hit "Create New Session" button.
+        </p>
+        <p class="mb-2">
+          If you want to roll with friends, create a new session and give them 6 character session ID number which they
+          can you to join the session. Alternatively, after creating a session, you can just copy and give them session
+          URL, for example: {{ domain }}/s/V4A6nA. Session expires after 8 hours.
+        </p>
+      </div>
+    </div>
+    <div class="border-t border-neutral-300">
+      <div class="mx-auto max-w-6xl mt-3">
+        <div class="text-center my-3">
+          Contact:
+          <a href="mailto:admin@hammergen.net" class="text-blue-500 hover:text-blue-900">admin@hammergen.net</a>
         </div>
       </div>
-      <p v-if="invalidSession" class="mt-1 text-red-500 text-xs text-center">
-        ID must be a combination of 6 letters and/or numbers.
-      </p>
-    </div>
-
-    <div class="mx-auto text-center my-1">or</div>
-
-    <div class="mx-auto flex justify-center gap-4">
-      <button
-        class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-2 text-neutral-100 w-32"
-        :class="submitting ? 'pointer-events-none bg-emerald-600' : ''"
-        @click="createSession"
-      >
-        <AnimatedSpinner v-if="submitting" class="mx-auto" />
-        {{ submitting ? "" : "Create Session" }}
-      </button>
-      <button
-        :disabled="lastSessionDisabled"
-        class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-2 text-neutral-100"
-        @click="joinLastSession"
-      >
-        Join Last Session
-      </button>
-    </div>
-
-    <div v-if="errors.length" class="mt-2">
-      <div v-for="error in errors" :key="error" class="text-red-500 text-center">{{ error }}</div>
-    </div>
-
-    <div class="text-2xl mb-4 mt-8">What can I do here?</div>
-    <div>
-      <p class="mb-2">
-        Hammergen Dice is an online multiplayer dice roller. You can roll RPG dice by yourself or with friends. To start
-        rolling simply hit "Create New Session" button.
-      </p>
-      <p class="mb-2">
-        If you want to roll with friends, create a new session and give them 6 character session ID number which they
-        can you to join the session. Alternatively, after creating a session, you can just copy and give them session
-        URL, for example: {{ domain }}/s/V4A6nA. Session expires after 8 hours.
-      </p>
     </div>
   </div>
 </template>
@@ -137,4 +147,8 @@ async function createSession() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.fit-screen {
+  height: calc(100dvh - 3.5rem);
+}
+</style>

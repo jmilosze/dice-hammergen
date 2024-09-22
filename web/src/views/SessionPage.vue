@@ -1,20 +1,29 @@
 <template>
   <div class="max-w-2xl mx-auto">
+    <div v-if="errors.length">
+      <div v-for="error in errors" :key="error" class="text-red-500 text-center">{{ error }}</div>
+    </div>
+
     <div v-if="sessionExists">
-      <div class="flex items-center">
+      <!--   session and username   -->
+      <div class="flex items-center h-14">
         <div class="flex-grow text-nowrap">
           Session ID: <span class="font-semibold">{{ sessionId }}</span> |
         </div>
         <div class="mr-2 ml-1">Name:</div>
         <input
           v-model="username"
-          class="border border-neutral-300 rounded w-full h-10 px-2 focus:outline-emerald-600 focus:border-transparent focus:outline focus:outline-2"
+          class="border border-neutral-300 rounded w-full px-2 py-1.5 focus:outline-emerald-600 focus:border-transparent focus:outline focus:outline-2"
         />
       </div>
 
-      <div ref="rollWindow" class="rolls mt-2 is-flex-grow-5 border">
+      <!--   roll windows   -->
+      <div ref="rollWindow" class="border rounded p-1.5 overflow-scroll overflow-x-hidden overflow-y-auto fit-screen">
         <div v-for="dRoll in displayRolls" :key="dRoll.timestamp" class="mt-1 mb-1 has-text-left has-text-white">
-          <div v-if="!isCurrentUserRoll(dRoll)" class="roll has-background-info">
+          <div
+            v-if="!isCurrentUserRoll(dRoll)"
+            class="bg-sky-500 rounded w-fit p-1.5 text-neutral-100 width-80 mr-auto"
+          >
             {{ dRoll.user }}
             <br />
             <div v-if="dRoll.msg">
@@ -25,7 +34,7 @@
             </div>
           </div>
 
-          <div v-else class="roll has-background-primary right">
+          <div v-else class="bg-emerald-500 rounded w-fit p-1.5 text-neutral-100 width-80 ml-auto">
             <div v-if="dRoll.msg">
               {{ dRoll.msg }}
             </div>
@@ -36,20 +45,30 @@
         </div>
       </div>
 
-      <div class="mt-2">
-        <div class="is-flex is-flex-direction-row is-justify-content-space-between is-flex-wrap-wrap">
+      <!--   dice and buttons   -->
+      <div class="pt-2 h-52">
+        <div class="flex justify-between gap-2">
           <div v-for="(diceData, diceType) in dice" :key="diceType">
             <div>
-              <img :src="`/images/dice/${diceType}.svg`" :alt="diceType.toString()" class="dice" />
+              <button class="mx-auto px-1" @click="increaseDice(diceType)">
+                <img :src="`/images/dice/${diceType}.svg`" :alt="diceType.toString()" class="w-12" />
+              </button>
             </div>
-            <input v-model="diceData.number" class="input dice-number" type="number" min="0" max="99" placeholder="0" />
+            <input
+              v-model="diceData.number"
+              class="border border-neutral-300 rounded w-full pl-1 py-1 focus:border-transparent outline-0 focus:outline-emerald-600 focus:outline focus:outline-2"
+              type="number"
+              min="0"
+              max="99"
+              placeholder="0"
+            />
           </div>
         </div>
 
         <div class="mt-2">
           <input
             v-model="message"
-            class="border border-neutral-300 rounded-l w-full h-10 px-2 focus:border-transparent outline-0"
+            class="border border-neutral-300 rounded w-full py-2 px-2 focus:border-transparent outline-0 focus:outline-emerald-600 focus:outline focus:outline-2"
             type="text"
             placeholder="Message"
             @keyup.enter="sendRoll"
@@ -58,20 +77,19 @@
 
         <div class="mt-2 flex gap-2 justify-center">
           <button
-            class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-2 text-neutral-100 w-32"
+            class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-1.5 text-neutral-100 flex-1"
             :class="submitting ? 'pointer-events-none bg-emerald-600' : ''"
             @click="sendRoll"
           >
             <AnimatedSpinner v-if="submitting" class="mx-auto" />
             {{ submitting ? "" : message ? "Message" : "Roll" }}
           </button>
-          <button class="bg-red-500 rounded hover:bg-red-600 px-2 py-2 text-neutral-100 min-w-32" @click="clearDice">
+          <button class="bg-red-500 rounded hover:bg-red-600 px-2 py-1.5 text-neutral-100 flex-1" @click="clearDice">
             {{ message ? "Clear message" : "Clear dice" }}
           </button>
         </div>
       </div>
     </div>
-
     <div v-else-if="sessionDoesNotExist">
       <p class="text-red-500 text-center text-2xl">Session does not exist</p>
       <div class="flex justify-center mt-6">
@@ -81,17 +99,22 @@
       </div>
     </div>
     <div v-else>
-      <p class="has-text-centered">Checking Session...</p>
-    </div>
-    <div v-if="errors.length">
-      <div v-for="error in errors" :key="error" class="text-red-500 text-center">{{ error }}</div>
+      <p class="text-center">Checking Session...</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted, onUnmounted } from "vue";
-import { DisplayRoll, createNewDiceTable, reRollDices, dicesToStr, strToDices, validateDices } from "../dice.ts";
+import {
+  DisplayRoll,
+  createNewDiceTable,
+  reRollDices,
+  dicesToStr,
+  strToDices,
+  validateDices,
+  DiceTable,
+} from "../dice.ts";
 import ViewRoll from "../components/ViewRoll.vue";
 import randomName from "../randomName";
 import { useRouter } from "vue-router";
@@ -152,6 +175,14 @@ const sessionExists = computed(() => {
 const sessionDoesNotExist = computed(() => {
   return sessionStatus.value === "doesNotExist";
 });
+
+function increaseDice(diceType: keyof DiceTable) {
+  if (dice.value[diceType].number !== null) {
+    dice.value[diceType].number += 1;
+  } else {
+    dice.value[diceType].number = 1;
+  }
+}
 
 onMounted(async () => {
   try {
@@ -253,4 +284,13 @@ function goBack() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.fit-screen {
+  height: calc(100dvh - 20rem);
+  min-height: 10rem;
+}
+
+.width-80 {
+  max-width: 80%;
+}
+</style>
