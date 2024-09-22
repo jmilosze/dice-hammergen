@@ -99,9 +99,10 @@ const timestamp = function () {
 };
 
 const props = defineProps<{
-  initialUsername?: string;
   sessionId: string;
 }>();
+
+const router = useRouter();
 
 const username = ref(randomName());
 const sessionStatus = ref("undetermined" as SessionStatus);
@@ -112,7 +113,6 @@ const userId = ref("");
 const message = ref("");
 const rollWindow = ref<HTMLDivElement | null>(null);
 
-const router = useRouter();
 const sessionRef = firebaseRef(db, `sessions/${props.sessionId}`);
 const subQuery = query(sessionRef, limitToLast(ROLLS_TO_DISPLAY));
 
@@ -133,10 +133,6 @@ const sessionDoesNotExist = computed(() => {
 });
 
 onMounted(async () => {
-  if (props.initialUsername) {
-    username.value = props.initialUsername;
-  }
-
   try {
     const session = await get(query(sessionRef, limitToLast(1)));
     if (!session.val()) {
@@ -224,11 +220,7 @@ function isCurrentUserRoll(roll: DisplayRoll): boolean {
 }
 
 function goBack() {
-  if (props.initialUsername) {
-    router.push({ name: "home", params: { initialUsername: props.initialUsername } });
-  } else {
-    router.push({ name: "home" });
-  }
+  router.push({ name: "home" });
 }
 </script>
 

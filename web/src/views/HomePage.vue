@@ -2,11 +2,6 @@
   <div class="max-w-3xl mx-auto">
     <div class="text-2xl text-center">Roll RPG dices with friends.</div>
     <div class="mt-10 max-w-md mx-auto">
-      <input
-        v-model="username"
-        class="border border-neutral-300 rounded w-full h-10 px-2 focus:outline-emerald-600 focus:border-transparent focus:outline focus:outline-2"
-        placeholder="Your Name"
-      />
       <div
         class="mt-2 flex items-stretch focus-within:outline-emerald-600 focus-within:outline-2 focus-within:outline rounded"
       >
@@ -68,7 +63,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import axios from "axios";
-import randomName from "../randomName";
 import { useRouter } from "vue-router";
 import AnimatedSpinner from "../components/AnimatedSpinner.vue";
 
@@ -99,10 +93,6 @@ const lastSessionDisabled = computed(() => {
   return !lastSessionId.value;
 });
 
-function defaultUsername() {
-  return username.value ? username.value : randomName();
-}
-
 function checkSessionId() {
   const re = /^[a-zA-Z0-9]{6}$/;
   invalidSession.value = !re.test(sessionId.value);
@@ -111,7 +101,7 @@ function checkSessionId() {
 function joinLastSession() {
   router.push({
     name: "session",
-    params: { sessionId: lastSessionId.value, initialUsername: username.value },
+    params: { sessionId: lastSessionId.value },
   });
 }
 
@@ -124,7 +114,7 @@ function joinSession() {
 
   router.push({
     name: "session",
-    params: { sessionId: sessionId.value, initialUsername: username.value },
+    params: { sessionId: sessionId.value },
   });
 }
 
@@ -148,7 +138,7 @@ async function createSession() {
 
   await router.push({
     name: "session",
-    params: { sessionId: sessionId.value, initialUsername: defaultUsername() },
+    params: { sessionId: sessionId.value },
   });
 }
 </script>
