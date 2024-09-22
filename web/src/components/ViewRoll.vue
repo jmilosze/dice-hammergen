@@ -2,7 +2,7 @@
   <div>
     <span v-for="dice in dicesDisplay" :key="dice.diceType">
       <span>{{ dice.prefix }}</span>
-      <img :src="`/images/dice/${dice.diceType}.svg`" :alt="dice.diceType" class="dice" />
+      <img :src="`/images/dice/${dice.diceType}.svg`" :alt="dice.diceType" class="w-8 inline-block align-middle" />
       <span> {{ dice.suffix }} </span>
     </span>
     <span> {{ rollSum }}</span>
@@ -43,9 +43,4 @@ const rollSum = computed(() => {
 });
 </script>
 
-<style scoped>
-.dice {
-  vertical-align: middle;
-  width: 2rem;
-}
-</style>
+<style scoped></style>

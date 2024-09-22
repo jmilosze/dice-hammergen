@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-3xl mx-auto px-5">
+  <div class="max-w-3xl mx-auto">
     <div class="text-2xl text-center">Roll RPG dices with friends.</div>
     <div class="mt-10 max-w-md mx-auto">
       <input
