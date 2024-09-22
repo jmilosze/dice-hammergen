@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-3xl mx-auto">
-    <div class="text-2xl text-center">Roll RPG dices with friends.</div>
+    <div class="text-2xl text-center">Roll RPG dice with friends</div>
     <div class="mt-10 max-w-md mx-auto">
       <div
         class="mt-2 flex items-stretch focus-within:outline-emerald-600 focus-within:outline-2 focus-within:outline rounded"
@@ -48,8 +48,8 @@
     <div class="text-2xl mb-4 mt-8">What can I do here?</div>
     <div>
       <p class="mb-2">
-        Hammergen Dice is an online multiplayer dice roller. You can roll RPG dices by yourself or with friends. To
-        start rolling simply hit "Create New Session" button.
+        Hammergen Dice is an online multiplayer dice roller. You can roll RPG dice by yourself or with friends. To start
+        rolling simply hit "Create New Session" button.
       </p>
       <p class="mb-2">
         If you want to roll with friends, create a new session and give them 6 character session ID number which they
