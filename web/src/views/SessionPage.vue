@@ -47,25 +47,44 @@
         </div>
 
         <div class="mt-2">
-          <input v-model="message" class="input" type="text" placeholder="Message" @keyup.enter="sendRoll" />
+          <input
+            v-model="message"
+            class="border border-neutral-300 rounded-l w-full h-10 px-2 focus:border-transparent outline-0"
+            type="text"
+            placeholder="Message"
+            @keyup.enter="sendRoll"
+          />
         </div>
 
-        <div class="mt-2 is-flex is-flex-direction-row is-flex-wrap-wrap">
-          <button class="button is-success is-flex-grow-3 mr-2 input-small" @click="sendRoll">Send</button>
-          <button class="button is-danger is-flex-grow-1 ml-2 input-small" @click="clearDices">Clear dices</button>
+        <div class="mt-2 flex gap-2 justify-center">
+          <button
+            class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-2 text-neutral-100 w-32"
+            :class="submitting ? 'pointer-events-none bg-emerald-600' : ''"
+            @click="sendRoll"
+          >
+            <AnimatedSpinner v-if="submitting" class="mx-auto" />
+            {{ submitting ? "" : message ? "Message" : "Roll" }}
+          </button>
+          <button class="bg-red-500 rounded hover:bg-red-600 px-2 py-2 text-neutral-100 min-w-32" @click="clearDice">
+            {{ message ? "Clear message" : "Clear dice" }}
+          </button>
         </div>
       </div>
     </div>
 
     <div v-else-if="sessionDoesNotExist">
-      <p class="is-size-5 has-text-centered has-text-danger">Session does not exist.</p>
-      <button class="button is-success mt-2" @click="goBack">Go Back</button>
+      <p class="text-red-500 text-center text-2xl">Session does not exist</p>
+      <div class="flex justify-center mt-6">
+        <button class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-2 text-neutral-100" @click="goBack">
+          Go Back
+        </button>
+      </div>
     </div>
     <div v-else>
       <p class="has-text-centered">Checking Session...</p>
     </div>
     <div v-if="errors.length">
-      <div v-for="error in errors" :key="error" class="help is-danger">{{ error }}</div>
+      <div v-for="error in errors" :key="error" class="text-red-500 text-center">{{ error }}</div>
     </div>
   </div>
 </template>
@@ -89,6 +108,7 @@ import {
   DataSnapshot,
 } from "firebase/database";
 import createRandomString from "../randomString.ts";
+import AnimatedSpinner from "../components/AnimatedSpinner.vue";
 
 const ROLLS_TO_DISPLAY = 250;
 
@@ -111,6 +131,7 @@ const displayRolls = ref([] as DisplayRoll[]);
 const dice = ref(createNewDiceTable());
 const userId = ref("");
 const message = ref("");
+const submitting = ref(false);
 const rollWindow = ref<HTMLDivElement | null>(null);
 
 const sessionRef = firebaseRef(db, `sessions/${props.sessionId}`);
@@ -200,6 +221,8 @@ async function sendRoll() {
     return;
   }
 
+  submitting.value = true;
+
   const newRollRef = push(sessionRef);
 
   await set(newRollRef, {
@@ -209,9 +232,15 @@ async function sendRoll() {
     timestamp: timestamp(),
     userId: userId.value,
   });
+
+  submitting.value = false;
 }
 
-function clearDices() {
+function clearDice() {
+  if (message.value) {
+    message.value = "";
+    return;
+  }
   dice.value = createNewDiceTable();
 }
 

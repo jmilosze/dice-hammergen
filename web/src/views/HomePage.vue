@@ -16,7 +16,7 @@
           <button class="px-5 h-10 text-neutral-100 w-full" @click="joinSession">Join</button>
         </div>
       </div>
-      <p v-if="invalidSession" class="mt-1 text-red-600 text-xs text-center">
+      <p v-if="invalidSession" class="mt-1 text-red-500 text-xs text-center">
         ID must be a combination of 6 letters and/or numbers.
       </p>
     </div>
@@ -42,7 +42,7 @@
     </div>
 
     <div v-if="errors.length" class="mt-2">
-      <div v-for="error in errors" :key="error" class="text-red-600 text-center">{{ error }}</div>
+      <div v-for="error in errors" :key="error" class="text-red-500 text-center">{{ error }}</div>
     </div>
 
     <div class="text-2xl mb-4 mt-8">What can I do here?</div>
@@ -66,13 +66,7 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import AnimatedSpinner from "../components/AnimatedSpinner.vue";
 
-const props = defineProps<{
-  initialUsername?: string;
-  initialSessionId?: string;
-}>();
-
-const username = ref(props.initialUsername ? props.initialUsername : "");
-const sessionId = ref(props.initialSessionId ? props.initialSessionId : "");
+const sessionId = ref("");
 const lastSessionId = ref("");
 const errors = ref([] as string[]);
 const submitting = ref(false);
