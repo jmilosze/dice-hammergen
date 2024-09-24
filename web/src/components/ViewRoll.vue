@@ -2,53 +2,45 @@
   <div>
     <span v-for="dice in dicesDisplay" :key="dice.diceType">
       <span>{{ dice.prefix }}</span>
-      <img :src="require(`../assets/${dice.diceType}.svg`)" :alt="dice.diceType" class="dice" />
+      <img :src="`/images/dice/${dice.diceType}.svg`" :alt="dice.diceType" class="w-8 inline-block align-middle" />
       <span> {{ dice.suffix }} </span>
     </span>
     <span> {{ rollSum }}</span>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, computed } from "vue";
-import { DiceTable } from "@/dices";
+<script setup lang="ts">
+import { computed } from "vue";
+import { DiceTable } from "../dice.ts";
 
-export default defineComponent({
-  props: { diceTable: { type: Object as PropType<DiceTable>, required: true } },
-  setup(props) {
-    const dicesDisplay = computed(() => {
-      const dices: { prefix: string; diceType: string; suffix: string }[] = [];
+const props = defineProps<{
+  diceTable: DiceTable;
+}>();
 
-      for (const [diceType, diceData] of Object.entries(props.diceTable)) {
-        if (diceData.number) {
-          const prefix = diceData.number > 1 ? `${diceData.number}x` : "";
-          dices.push({ prefix: prefix, diceType: diceType, suffix: "" });
-        }
-      }
+const dicesDisplay = computed(() => {
+  const dices: { prefix: string; diceType: string; suffix: string }[] = [];
 
-      for (const [index, dice] of dices.entries()) {
-        dice.suffix = index !== dices.length - 1 ? " + " : " roll is ";
-      }
-
-      return dices;
-    });
-
-    const rollSum = computed(() => {
-      let sum = 0;
-      for (const diceData of Object.values(props.diceTable)) {
-        sum += diceData.roll ? diceData.roll : 0;
-      }
-      return sum;
-    });
-
-    return { rollSum, dicesDisplay };
+  for (const [diceType, diceData] of Object.entries(props.diceTable)) {
+    if (diceData.number) {
+      const prefix = diceData.number > 1 ? `${diceData.number}x` : "";
+      dices.push({ prefix: prefix, diceType: diceType, suffix: "" });
+    }
   }
+
+  for (const [index, dice] of dices.entries()) {
+    dice.suffix = index !== dices.length - 1 ? " + " : " roll is ";
+  }
+
+  return dices;
+});
+
+const rollSum = computed(() => {
+  let sum = 0;
+  for (const diceData of Object.values(props.diceTable)) {
+    sum += diceData.roll ? diceData.roll : 0;
+  }
+  return sum;
 });
 </script>
 
-<style scoped>
-.dice {
-  vertical-align: middle;
-  width: 2rem;
-}
-</style>
+<style scoped></style>

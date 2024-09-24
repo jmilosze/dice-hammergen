@@ -6,6 +6,24 @@
     ],
     "source": "functions"
   },
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "database": {
+      "port": 9000
+    },
+    "ui": {
+      "enabled": true
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "singleProjectMode": true,
+    "pubsub": {
+      "port": 8085
+    }
+  },
   "hosting": {
     "public": "web/dist",
     "ignore": [
