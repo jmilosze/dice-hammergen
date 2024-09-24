@@ -11,7 +11,7 @@ const TEST_SESSION_EXPIRY = 30;
 
 initializeApp();
 if (process.env.FIREBASE_DATABASE_EMULATOR_HOST) {
-  console.log('Using database emulator');
+  console.log("Using database emulator");
 }
 
 const timestamp = () => Math.floor(Date.now() / 1000);
@@ -20,9 +20,9 @@ export const createSession = onRequest(async (_request, response) => {
   response.set("Access-Control-Allow-Origin", "*");
 
   const db = getDatabase();
-  const sessionsNode = await db.ref("sessionTimestamps").once("value");
+  const sessionTimestampsNode = await db.ref("sessionTimestamps").once("value");
 
-  if (sessionsNode.numChildren() >= MAX_SESSIONS) {
+  if (sessionTimestampsNode.numChildren() >= MAX_SESSIONS) {
     response.json({
       state: -1,
       msg: `Session number exceeded maximum of ${MAX_SESSIONS}.`,
@@ -34,7 +34,7 @@ export const createSession = onRequest(async (_request, response) => {
   let newSession = "";
   for (let i = 0; i < MAX_RETRY; ++i) {
     newSession = generate({ length: 6, charset: "alphanumeric", readable: true });
-    if (!sessionsNode.child(newSession).exists()) {
+    if (!sessionTimestampsNode.child(newSession).exists()) {
       break;
     }
     newSession = "";
@@ -66,24 +66,23 @@ export const createSession = onRequest(async (_request, response) => {
 export const clearExpiredScheduled = onSchedule("0 */8 * * *", clearExpired);
 
 async function clearExpired() {
-
-  let expiry = SESSION_EXPIRY
+  let expiry = SESSION_EXPIRY;
   if (process.env.FIREBASE_DATABASE_EMULATOR_HOST) {
-    console.log('Using test session expiry');
-    expiry = TEST_SESSION_EXPIRY
+    console.log("Using test session expiry");
+    expiry = TEST_SESSION_EXPIRY;
   }
 
   const db = getDatabase();
-  const sessionsNode = await db.ref("sessionTimestamps").once("value");
+  const sessionTimestampsNode = await db.ref("sessionTimestamps").once("value");
 
-  if (!sessionsNode.exists()) {
+  if (!sessionTimestampsNode.exists()) {
     return;
   }
 
   const currentTime = timestamp();
   const updates: Record<string, string | null> = {};
 
-  sessionsNode.forEach((childSnapshot: DataSnapshot) => {
+  sessionTimestampsNode.forEach((childSnapshot: DataSnapshot) => {
     const sessionTime = childSnapshot.val();
 
     if (typeof sessionTime === "number" && currentTime - sessionTime >= expiry) {
