@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-2xl mx-auto">
-    <div v-if="errors.length">
+    <div v-if="errors.length" class="my-5">
       <div v-for="error in errors" :key="error" class="text-red-500 text-center">{{ error }}</div>
     </div>
 
@@ -77,25 +77,23 @@
 
         <div class="mt-2 flex gap-2 justify-center">
           <button
-            class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-1.5 text-neutral-100 flex-1"
+            class="btn-primary flex-1"
             :class="submitting ? 'pointer-events-none bg-emerald-600' : ''"
             @click="sendRoll"
           >
             <AnimatedSpinner v-if="submitting" class="mx-auto" />
             {{ submitting ? "" : message ? "Message" : "Roll" }}
           </button>
-          <button class="bg-red-500 rounded hover:bg-red-600 px-2 py-1.5 text-neutral-100 flex-1" @click="clearDice">
+          <button class="btn-red flex-1" @click="clearDice">
             {{ message ? "Clear message" : "Clear dice" }}
           </button>
         </div>
       </div>
     </div>
     <div v-else-if="sessionDoesNotExist">
-      <p class="text-red-500 text-center text-2xl">Session does not exist</p>
-      <div class="flex justify-center mt-6">
-        <button class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-2 text-neutral-100" @click="goBack">
-          Go Back
-        </button>
+      <p class="text-red-500 text-center text-2xl my-6">Session does not exist</p>
+      <div class="flex justify-center">
+        <button class="btn-primary" @click="goBack">Go Back</button>
       </div>
     </div>
     <div v-else>

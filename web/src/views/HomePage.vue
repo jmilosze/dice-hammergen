@@ -13,9 +13,7 @@
               placeholder="Session ID"
             />
           </div>
-          <div class="bg-emerald-500 rounded-r hover:bg-emerald-600">
-            <button class="px-5 py-1.5 text-neutral-100 w-full" @click="joinSession">Join</button>
-          </div>
+          <button class="btn-primary py-1.5 rounded-none rounded-r" @click="joinSession">Join</button>
         </div>
         <p v-if="invalidSession" class="mt-1 text-red-500 text-xs text-center">
           ID must be a combination of 6 letters and/or numbers.
@@ -26,20 +24,14 @@
 
       <div class="mx-auto flex justify-center gap-4">
         <button
-          class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-2 text-neutral-100 w-32"
+          class="btn-primary w-32"
           :class="submitting ? 'pointer-events-none bg-emerald-600' : ''"
           @click="createSession"
         >
           <AnimatedSpinner v-if="submitting" class="mx-auto" />
           {{ submitting ? "" : "Create Session" }}
         </button>
-        <button
-          :disabled="lastSessionDisabled"
-          class="bg-emerald-500 rounded hover:bg-emerald-600 px-2 py-2 text-neutral-100"
-          @click="joinLastSession"
-        >
-          Join Last Session
-        </button>
+        <button :disabled="lastSessionDisabled" class="btn-primary" @click="joinLastSession">Join Last Session</button>
       </div>
 
       <div v-if="errors.length" class="mt-2">
