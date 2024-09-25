@@ -18,11 +18,11 @@
       </div>
 
       <!--   roll windows   -->
-      <div ref="rollWindow" class="border rounded p-1.5 overflow-scroll overflow-x-hidden overflow-y-auto fit-screen">
+      <div ref="rollWindow" class="border rounded p-1.5 overflow-scroll overflow-x-hidden overflow-y-auto chat-height">
         <div v-for="dRoll in displayRolls" :key="dRoll.timestamp" class="mt-1 mb-1 has-text-left has-text-white">
           <div
             v-if="!isCurrentUserRoll(dRoll)"
-            class="bg-sky-500 rounded w-fit p-1.5 text-neutral-100 width-80 mr-auto"
+            class="bg-sky-500 rounded w-fit p-1.5 text-neutral-100 bubble-width mr-auto"
           >
             {{ dRoll.user }}
             <br />
@@ -34,7 +34,7 @@
             </div>
           </div>
 
-          <div v-else class="bg-emerald-500 rounded w-fit p-1.5 text-neutral-100 width-80 ml-auto">
+          <div v-else class="bg-emerald-500 rounded w-fit p-1.5 text-neutral-100 bubble-width ml-auto">
             <div v-if="dRoll.msg">
               {{ dRoll.msg }}
             </div>
@@ -283,12 +283,12 @@ function goBack() {
 </script>
 
 <style scoped>
-.fit-screen {
+.chat-height {
   height: calc(100dvh - 20rem);
   min-height: 10rem;
 }
 
-.width-80 {
+.bubble-width {
   max-width: 80%;
 }
 </style>

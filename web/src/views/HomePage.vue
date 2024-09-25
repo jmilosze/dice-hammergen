@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-3xl mx-auto flex flex-col fit-screen">
+  <div class="max-w-3xl mx-auto flex flex-col content-height">
     <div class="flex-grow">
       <div class="text-2xl text-center mt-12">Roll RPG dice with friends</div>
       <div class="mt-10 max-w-md mx-auto">
@@ -140,7 +140,7 @@ async function createSession() {
 </script>
 
 <style scoped>
-.fit-screen {
+.content-height {
   height: calc(100dvh - 3.5rem);
 }
 </style>
