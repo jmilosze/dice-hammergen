@@ -1,10 +1,12 @@
 .idea/
+.firebase/
 
 functions/lib/
 functions/node_modules/
 
 web/dist/
 web/node_modules/
+web/vite.config.js
 
 database-debug.log
 pubsub-debug.log
