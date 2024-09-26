@@ -17,7 +17,7 @@ export interface DiceTable {
   d100: { number: number | null; roll: number | null };
 }
 
-export const createNewDiceTable = function() {
+export const createNewDiceTable = function () {
   return {
     d4: { number: null, roll: null },
     d6: { number: null, roll: null },
@@ -25,16 +25,16 @@ export const createNewDiceTable = function() {
     d10: { number: null, roll: null },
     d12: { number: null, roll: null },
     d20: { number: null, roll: null },
-    d100: { number: null, roll: null }
+    d100: { number: null, roll: null },
   } as DiceTable;
 };
 
-const rollDice = function(sides: string) {
+const rollDice = function (sides: string) {
   const min = parseInt(sides.substring(1));
   return Math.floor(Math.random() * min + 1);
 };
 
-export const reRollDices = function(dices: DiceTable) {
+export const reRollDices = function (dices: DiceTable) {
   for (const [diceType, diceData] of Object.entries(dices)) {
     diceData.roll = 0;
     const numberOfDices = diceData.number ? diceData.number : 0;
@@ -44,7 +44,7 @@ export const reRollDices = function(dices: DiceTable) {
   }
 };
 
-export const dicesToStr = function(dices: DiceTable) {
+export const dicesToStr = function (dices: DiceTable) {
   let text = "";
   for (const [diceType, diceData] of Object.entries(dices)) {
     if (diceData.number && diceData.number > 0) {
@@ -54,18 +54,25 @@ export const dicesToStr = function(dices: DiceTable) {
   return text.slice(0, -1);
 };
 
-export const validateDices = function(dices: DiceTable) {
+export const validateDice = function (dices: DiceTable) {
   for (const [diceKey, diceData] of Object.entries(dices)) {
-    if (diceData.number && diceData.number < 0) {
+    if (!diceData.number) {
+      dices[diceKey].number = null;
+      continue;
+    }
+    if (!Number.isInteger(diceData.number)) {
+      dices[diceKey].number = Math.round(diceData.number);
+    }
+    if (diceData.number < 0) {
       dices[diceKey].number = null;
     }
-    if (diceData.number && diceData.number > 99) {
+    if (diceData.number > 99) {
       dices[diceKey].number = 99;
     }
   }
 };
 
-export const strToDices = function(strDices: string) {
+export const strToDices = function (strDices: string) {
   const dices = createNewDiceTable();
   for (const dice of strDices.split(",")) {
     const diceData = dice.split(":");
