@@ -19,10 +19,10 @@
 
       <!--   roll windows   -->
       <div ref="rollWindow" class="border rounded p-1.5 overflow-scroll overflow-x-hidden overflow-y-auto chat-height">
-        <div v-for="dRoll in displayRolls" :key="dRoll.timestamp" class="mt-1 mb-1 has-text-left has-text-white">
+        <div v-for="dRoll in displayRolls" :key="dRoll.timestamp" class="mt-1 mb-1">
           <div
             v-if="!isCurrentUserRoll(dRoll)"
-            class="bg-sky-500 rounded w-fit p-1.5 text-neutral-100 bubble-width mr-auto"
+            class="bg-sky-500 rounded w-fit p-1.5 text-neutral-100 font-medium bubble-width mr-auto"
           >
             {{ dRoll.user }}
             <br />
@@ -34,7 +34,7 @@
             </div>
           </div>
 
-          <div v-else class="bg-emerald-500 rounded w-fit p-1.5 text-neutral-100 bubble-width ml-auto">
+          <div v-else class="bg-emerald-500 rounded w-fit p-1.5 text-neutral-100 font-medium bubble-width ml-auto">
             <div v-if="dRoll.msg">
               {{ dRoll.msg }}
             </div>
@@ -96,7 +96,7 @@
         <button class="btn-primary" @click="goBack">Go Back</button>
       </div>
     </div>
-    <div v-else>
+    <div v-else class="mt-2">
       <p class="text-center">Checking Session...</p>
     </div>
   </div>
