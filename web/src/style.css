@@ -9,4 +9,8 @@
     .btn-red {
         @apply bg-red-500 rounded hover:bg-red-600 px-2 py-2 text-neutral-100 font-medium;
     }
+
+    .input-standard {
+        @apply border border-neutral-300 rounded w-full px-2 py-1.5 focus:outline-emerald-600 focus:border-transparent focus:outline focus:outline-2
+    }
 }

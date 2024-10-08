@@ -11,10 +11,7 @@
           Session ID: <span class="font-semibold">{{ sessionId }}</span> |
         </div>
         <div class="mr-2 ml-1">Name:</div>
-        <input
-          v-model="username"
-          class="border border-neutral-300 rounded w-full px-2 py-1.5 focus:outline-emerald-600 focus:border-transparent focus:outline focus:outline-2"
-        />
+        <input v-model="username" class="input-standard" />
       </div>
 
       <!--   roll windows   -->
@@ -47,16 +44,16 @@
 
       <!--   dice and buttons   -->
       <div class="pt-2 h-52">
-        <div class="flex justify-between gap-2">
+        <div class="flex justify-between gap-2 sm:gap-6">
           <div v-for="(diceData, diceType) in dice" :key="diceType">
-            <div>
-              <button class="mx-auto px-1" @click="increaseDice(diceType)">
+            <div class="flex justify-center">
+              <button class="" @click="increaseDice(diceType)">
                 <img :src="`/images/dice/${diceType}.svg`" :alt="diceType.toString()" class="w-12" />
               </button>
             </div>
             <input
               v-model="diceData.number"
-              class="border border-neutral-300 rounded w-full pl-1 py-1 focus:border-transparent outline-0 focus:outline-emerald-600 focus:outline focus:outline-2"
+              class="input-standard text-center"
               type="number"
               min="0"
               max="99"
@@ -66,13 +63,7 @@
         </div>
 
         <div class="mt-2">
-          <input
-            v-model="message"
-            class="border border-neutral-300 rounded w-full py-2 px-2 focus:border-transparent outline-0 focus:outline-emerald-600 focus:outline focus:outline-2"
-            type="text"
-            placeholder="Message"
-            @keyup.enter="sendRoll"
-          />
+          <input v-model="message" class="input-standard" type="text" placeholder="Message" @keyup.enter="sendRoll" />
         </div>
 
         <div class="mt-2 flex gap-2 justify-center">
@@ -110,7 +101,7 @@ import {
   reRollDices,
   dicesToStr,
   strToDices,
-  validateDices,
+  validateDice,
   DiceTable,
 } from "../dice.ts";
 import ViewRoll from "../components/ViewRoll.vue";
@@ -241,7 +232,7 @@ async function sendRoll() {
     msg = message.value;
     message.value = "";
   } else {
-    validateDices(dice.value);
+    validateDice(dice.value);
     reRollDices(dice.value);
     roll = dicesToStr(dice.value);
   }

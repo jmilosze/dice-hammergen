@@ -13,7 +13,7 @@
               placeholder="Session ID"
             />
           </div>
-          <button class="btn-primary py-1.5 rounded-none rounded-r" @click="joinSession">Join</button>
+          <button class="btn-primary py-1.5 px-6 rounded-none rounded-r" @click="joinSession">Join</button>
         </div>
         <p v-if="invalidSession" class="mt-1 text-red-500 text-xs text-center">
           ID must be a combination of 6 letters and/or numbers.
