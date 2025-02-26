@@ -11,3 +11,5 @@ web/vite.config.js
 database-debug.log
 pubsub-debug.log
 ui-debug.log
+
+.firebaserc
