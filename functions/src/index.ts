@@ -11,7 +11,7 @@ const TEST_SESSION_EXPIRY = 30;
 
 initializeApp();
 if (process.env.FIREBASE_DATABASE_EMULATOR_HOST) {
-  console.log("Using database emulator");
+  console.log("Using database emulator in functions");
 }
 
 const timestamp = () => Math.floor(Date.now() / 1000);

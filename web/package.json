@@ -9,7 +9,8 @@
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "lint:js": "eslint src --ext .ts,.vue"
+    "lint:js": "eslint src --ext .ts,.vue",
+    "firebase-emulators": "firebase emulators:start"
   },
   "dependencies": {
     "axios": "^1.8.1",

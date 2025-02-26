@@ -1,8 +1,7 @@
 {
   "functions": {
-    "predeploy": [
-      "npm --prefix functions run build"
-    ]
+    "source": "functions",
+    "predeploy": ["npm --prefix functions run build"]
   },
   "emulators": {
     "functions": {
@@ -12,7 +11,8 @@
       "port": 9000
     },
     "ui": {
-      "enabled": true
+      "enabled": true,
+      "port": 4000
     },
     "hosting": {
       "port": 5000
@@ -23,15 +23,9 @@
     }
   },
   "hosting": {
-    "predeploy": [
-      "npm --prefix web run build"
-    ],
+    "predeploy": ["npm --prefix web run build"],
     "public": "web/dist",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",

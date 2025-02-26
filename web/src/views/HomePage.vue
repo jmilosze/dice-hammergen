@@ -117,13 +117,15 @@ function joinSession() {
 async function createSession() {
   submitting.value = true;
   try {
-    const newSession = await axios.get(import.meta.env.VITE_FUNCTIONS_URL + "/createSession");
+    const functionsUrl = import.meta.env.VITE_FUNCTIONS_URL;
+    const newSession = await axios.get(`${functionsUrl}/createSession`);
     if (newSession.data.state === -1 || newSession.data.state === -2) {
       errors.value.push(newSession.data.msg);
     } else {
       sessionId.value = newSession.data.data;
     }
-  } catch {
+  } catch (error) {
+    console.error("Error creating session:", error);
     errors.value.push("Server Error.");
   }
 

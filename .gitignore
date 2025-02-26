@@ -9,6 +9,7 @@ web/node_modules/
 web/vite.config.js
 
 database-debug.log
+firebase-debug.log
 pubsub-debug.log
 ui-debug.log
 

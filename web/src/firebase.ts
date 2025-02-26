@@ -1,8 +1,9 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase } from "firebase/database";
-import { getAnalytics } from "firebase/analytics";
+import { getDatabase, connectDatabaseEmulator } from "firebase/database";
+import { getAnalytics, isSupported } from "firebase/analytics";
 
 const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+const isDevelopment = import.meta.env.MODE === "development";
 
 export const firebaseApp = initializeApp({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -16,6 +17,22 @@ export const firebaseApp = initializeApp({
 });
 
 const db = getDatabase(firebaseApp);
-const analytics = getAnalytics(firebaseApp);
+// Connect to emulator in development mode
+if (isDevelopment) {
+  // Default port for Firebase Realtime Database emulator is 9000
+  connectDatabaseEmulator(db, "localhost", 9000);
+  console.log("Using Firebase Database emulator");
+}
+
+// Only initialize analytics in production
+let analytics = null;
+if (!isDevelopment) {
+  // Check if analytics is supported before initializing
+  isSupported().then((supported) => {
+    if (supported) {
+      analytics = getAnalytics(firebaseApp);
+    }
+  });
+}
 
 export { db, analytics };
