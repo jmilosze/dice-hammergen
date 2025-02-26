@@ -2,11 +2,22 @@ name: Deploy to Firebase
 
 on:
   workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: "What to deploy"
+        required: true
+        default: "both"
+        type: "choice"
+        options:
+          - both
+          - web
+          - functions
 
 jobs:
   deploy-functions:
     name: Deploy Firebase Functions
     runs-on: ubuntu-latest
+    if: github.event.inputs.deploy_target == 'both' || github.event.inputs.deploy_target == 'functions'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,7 +38,7 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0.7.0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_ZXC }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DICE_ROLLER }}"
           projectId: ${{ vars.PROJECT_ID }}
           channelId: live
           entryPoint: ./functions
@@ -35,6 +46,7 @@ jobs:
   deploy-web:
     name: Deploy Firebase Hosting
     runs-on: ubuntu-latest
+    if: github.event.inputs.deploy_target == 'both' || github.event.inputs.deploy_target == 'web'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -59,6 +71,6 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0.7.0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_ZXC }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DICE_ROLLER }}"
           projectId: ${{ vars.PROJECT_ID }}
           channelId: live
