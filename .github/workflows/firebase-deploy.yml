@@ -35,13 +35,12 @@ jobs:
         run: npm ci
 
       - name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0.7.0
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DICE_ROLLER }}"
           projectId: ${{ vars.PROJECT_ID }}
           channelId: live
-          entryPoint: ./functions
 
   deploy-web:
     name: Deploy Firebase Hosting
@@ -68,7 +67,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0.7.0
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DICE_ROLLER }}"
