@@ -34,13 +34,17 @@ jobs:
         working-directory: ./functions
         run: npm ci
 
-      - name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Build functions
+        working-directory: ./functions
+        run: npm run build
+
+      - name: Deploy to Firebase Functions
+        uses: w9jds/firebase-action@master
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DICE_ROLLER }}"
-          projectId: ${{ vars.PROJECT_ID }}
-          channelId: live
+          args: deploy --only functions
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DICE_ROLLER }}
+          PROJECT_ID: ${{ vars.PROJECT_ID }}
 
   deploy-web:
     name: Deploy Firebase Hosting
