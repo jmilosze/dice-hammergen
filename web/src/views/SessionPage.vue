@@ -48,7 +48,11 @@
           <div v-for="(diceData, diceType) in dice" :key="diceType">
             <div class="flex justify-center">
               <button class="" @click="increaseDice(diceType)">
-                <img :src="`/images/dice/${diceType}.svg`" :alt="diceType.toString()" class="w-12" />
+                <img
+                  :src="`/images/dice/${diceType}.svg`"
+                  :alt="diceType.toString()"
+                  class="w-12 transition-transform hover:scale-120"
+                />
               </button>
             </div>
             <input
