@@ -9,6 +9,6 @@
     }
 
     .input-standard {
-        @apply border border-neutral-300 rounded w-full px-2 py-1.5 focus:outline-emerald-600 focus:border-transparent focus:outline focus:outline-2
+        @apply border border-neutral-300 rounded w-full px-2 py-1.5 focus:outline-emerald-600 focus:border-transparent focus:outline-2
     }
 }
