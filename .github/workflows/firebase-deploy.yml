@@ -41,7 +41,7 @@ jobs:
       - name: Deploy to Firebase Functions
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only functions --non-interactive
+          args: deploy --only functions --non-interactive --force
         env:
           GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DICE_ROLLER }}
           PROJECT_ID: ${{ vars.PROJECT_ID }}
