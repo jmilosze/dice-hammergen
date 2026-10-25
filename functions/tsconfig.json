@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "module": "es2022",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "src",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "lib",
