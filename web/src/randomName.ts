@@ -34,7 +34,7 @@ const ANIMAL_NAMES = [
   "Hawk",
   "Robin",
   "Swan",
-  "Owl"
+  "Owl",
 ];
 
 const ADJECTIVES = [
@@ -70,10 +70,10 @@ const ADJECTIVES = [
   "Modern",
   "Warm",
   "Strong",
-  "Crazy"
+  "Crazy",
 ];
 
-export default function() {
+export default function () {
   return (
     ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)] +
     " " +

@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "src",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "lib",
-    "rootDir": "src",
     "sourceMap": true,
     "strict": true,
     "target": "es2022",
